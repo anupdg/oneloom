@@ -1,12 +1,12 @@
 const viewer = WALK.getViewer();
 
-// Hook to run before the scene starts loading
-viewer.onSceneReadyToLoad(() => {
-  const allEditableMaterials = viewer.getEditableMaterials();
+viewer.whenSceneReady().then(() => {
+  const editableMaterials = viewer.getEditableMaterials();
 
-  allEditableMaterials.forEach(materialName => {
+  editableMaterials.forEach(materialName => {
     viewer.setMaterialEditable(materialName);
     console.log(`Material made editable: ${materialName}`);
   });
-});
 
+  // Safe to add picker listeners, apply materials, etc. here
+});
