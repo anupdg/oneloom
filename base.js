@@ -1,15 +1,15 @@
-const viewer = WALK.getViewer();
-
-viewer.onSceneLoadComplete(() => {
-  const editableMaterials = viewer.getEditableMaterials();
-
-  if (!editableMaterials) {
-    console.error("❌ editableMaterials is null");
-    return;
-  }
-
-  editableMaterials.forEach(materialName => {
-    viewer.setMaterialEditable(materialName);
-    console.log(`✅ Editable: ${materialName}`);
+ var viewer = WALK.getViewer();
+  viewer.onNodeTypeClicked(function(node, position, distance) {
+    var nodeTypePath = [];
+    while (node) {
+      nodeTypePath.push(node.type);
+      node = node.parent;
+    }
+    viewer.openPopup(
+      '<div style="font-size: 1.5em">' +
+      '  Clicked nodes: ' + nodeTypePath.join(' > ') + '<br/>' +
+      '  Click distance: ' + distance.toFixed(2) + ' m' +
+      '</div>'
+    )
+    return true;
   });
-});
