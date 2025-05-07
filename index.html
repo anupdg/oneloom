@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Feature-Policy" content="xr *">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shapespark Selection Tracker</title>
+  <!-- External CSS file -->
+  <link rel="stylesheet" href="fireplace_lounge_styles.css">
+</head>
+<body>
+  <h1>Shapespark Selection Tracker</h1>
+  
+  <div class="container">
+    <div class="selection-panel">
+      <h3>Current Selection:</h3>
+      <div id="selectionData">
+        <p>Waiting for data from Shapespark scene...</p>
+      </div>
+      <div id="lastUpdate"></div>
+    </div>
+    
+    <div class="scene-container">
+      <!-- Replace the src URL with your actual Shapespark scene URL -->
+      <iframe id="sceneFrame" src="https://3d.oneloomxr.com/fireplace_lounge_01_v1-1/"></iframe>
+    </div>
+  </div>
+
+  <!-- External JavaScript file -->
+  <script src="fireplace_lounge_client.js"></script>
+</body>
+</html>
