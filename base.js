@@ -29,6 +29,12 @@ function createPickerUI() {
   const picker = document.createElement('div');
   picker.id = 'picker';
   picker.className = 'collapsed';
+
+  // Add positioning styles
+  picker.style.position = 'absolute';
+  picker.style.top = '30%';  // Position it above the middle
+  picker.style.left = '20px';
+  picker.style.zIndex = '1000';
   
   // Create the toggle button
   const toggleButton = document.createElement('button');
@@ -77,8 +83,9 @@ function createLockButton() {
   const lockContainer = document.createElement('div');
   lockContainer.id = 'lock-container';
   lockContainer.style.position = 'absolute';
-  lockContainer.style.bottom = '20px';
+  lockContainer.style.top  = '50%';
   lockContainer.style.left = '20px';
+  lockContainer.style.transform = 'translateY(-50%)'; 
   lockContainer.style.zIndex = '1000';
   
   // Create the lock button
