@@ -11,7 +11,8 @@ let materialsConfig = null;
 const textureCache = {};
 
 // Hardcoded material name - change this when needed
-const MATERIAL_NAME = "Floor";
+// const MATERIAL_NAME = "Floor";
+const MATERIAL_NAME = "Floor_Living_003";
 
 // 'Base','Wall plaster','Floor','Ceiling','Table'
 
