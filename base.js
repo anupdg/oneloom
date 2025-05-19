@@ -12,7 +12,7 @@ const textureCache = {};
 
 // Hardcoded material name - change this when needed
 // const MATERIAL_NAME = "Floor";
-const MATERIAL_NAME = "RUG_1";
+const MATERIAL_NAME = "Floor_1";
 
 // 'Base','Wall plaster','Floor','Ceiling','Table'
 
@@ -334,11 +334,11 @@ function loadMaterialsConfig() {
       if (!response.ok) {
         throw new Error('Failed to load materials config');
       }
+      console.log(response.json());
       return response.json();
     })
     .then(config => {
       materialsConfig = config;
-      console.error('MATERIAL_NAME', MATERIAL_NAME);
       loadTexturesForMaterial(MATERIAL_NAME);
     })
     .catch(error => {
