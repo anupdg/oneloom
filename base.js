@@ -334,7 +334,6 @@ function loadMaterialsConfig() {
       if (!response.ok) {
         throw new Error('Failed to load materials config');
       }
-      console.log(response.json());
       return response.json();
     })
     .then(config => {
@@ -343,7 +342,6 @@ function loadMaterialsConfig() {
     })
     .catch(error => {
       console.error('Error loading materials config:', error);
-      loadTexturesForMaterial(MATERIAL_NAME);
     });
 }
 
