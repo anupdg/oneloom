@@ -1,0 +1,89 @@
+{
+    "materials": {
+      "Base": {
+        "textures": [
+          {
+            "id": "base-metal",
+            "url": "https://cdn0.shapespark.com/demo/ASSETS/textures/metal.jpg",
+            "type": "image"
+          },
+          {
+            "id": "base-stone",
+            "url": "https://cdn0.shapespark.com/demo/ASSETS/textures/stone.jpg",
+            "type": "image"
+          },
+          {
+            "id": "base-dots",
+            "url": "https://cdn0.shapespark.com/demo/ASSETS/textures/dots-video.mp4",
+            "type": "video"
+          }
+        ]
+      },
+      "Wall plaster": {
+        "textures": [
+          {
+            "id": "wall-brick",
+            "url": "https://cdn0.shapespark.com/demo/ASSETS/textures/brick.jpg",
+            "type": "image"
+          },
+          {
+            "id": "wall-brick2",
+            "url": "https://cdn0.shapespark.com/demo/ASSETS/textures/brick2.jpg",
+            "type": "image"
+          },
+          {
+            "id": "wall-color-brick",
+            "url": "https://images.pexels.com/photos/1227511/pexels-photo-1227511.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+            "type": "image"
+          }
+        ]
+      },
+      "Floor": {
+        "textures": [
+          {
+            "id": "floor-tiles",
+            "url": "https://cdn0.shapespark.com/demo/ASSETS/textures/tiles.jpg",
+            "type": "image"
+          },
+          {
+            "id": "floor-black-brick",
+            "url": "https://t3.ftcdn.net/jpg/01/34/11/58/360_F_134115811_zDBMdIni0jDuAMVpFsovAK9H3xUcrTMg.jpg",
+            "type": "image"
+          },
+          {
+            "id": "floor-lines",
+            "url": "https://cdn0.shapespark.com/demo/ASSETS/textures/lines-video.mp4",
+            "type": "video"
+          }
+        ]
+      },
+      "Ceiling": {
+        "textures": [
+          {
+            "id": "ceiling-yellow",
+            "url": "https://cdn0.shapespark.com/demo/ASSETS/textures/yellow.jpg",
+            "type": "image"
+          },
+          {
+            "id": "ceiling-squares",
+            "url": "https://cdn0.shapespark.com/demo/ASSETS/textures/squares-video.mp4",
+            "type": "video"
+          }
+        ]
+      },
+      "Table": {
+        "textures": [
+          {
+            "id": "table-stone",
+            "url": "https://cdn0.shapespark.com/demo/ASSETS/textures/stone.jpg",
+            "type": "image"
+          },
+          {
+            "id": "table-metal",
+            "url": "https://cdn0.shapespark.com/demo/ASSETS/textures/metal.jpg",
+            "type": "image"
+          }
+        ]
+      }
+    }
+  }
