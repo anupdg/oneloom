@@ -1,1 +1,586 @@
-window.selection={material:null,texture:null};let materialsConfig=null;const textureCache={},MATERIAL_NAME="ceiling";let isScreenLocked=!1,lockedPosition=null,lockedRotation=null;function createPickerUI(){const e=document.createElement("div");e.id="picker",e.className="collapsed",e.style.position="absolute",e.style.top="30%",e.style.left="20px",e.style.zIndex="1000";const t=document.createElement("button");t.id="toggle-picker",t.textContent="→";const o=document.createElement("div");o.id="picker-content";const n=document.createElement("h3");n.textContent="Textures";const i=document.createElement("div");i.className="texture-container",i.id="texture-container",o.appendChild(n),o.appendChild(i),e.appendChild(t),e.appendChild(o),document.body.appendChild(e),t.addEventListener("click",(function(){e.classList.toggle("collapsed"),e.classList.contains("collapsed")?this.textContent="→":this.textContent="←"}))}function createLockButton(){const e=document.createElement("div");e.id="lock-container",e.style.position="absolute",e.style.top="50%",e.style.right="20px",e.style.transform="translateY(-50%)",e.style.zIndex="1000";const t=document.createElement("button");t.id="lock-button",t.className="lock-button",t.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>',t.addEventListener("click",toggleScreenLock),e.appendChild(t),document.body.appendChild(e)}function toggleScreenLock(){isScreenLocked?unlockScreen():lockScreen()}function lockScreen(){const e=WALK.getViewer();if(e)try{createMovementBlockerOverlay();const t=e.getCameraPosition(),o=e.getCameraRotation();lockedPosition={x:t.x,y:t.y,z:t.z,clone:function(){return{x:this.x,y:this.y,z:this.z}},distanceTo:function(e){const t=this.x-e.x,o=this.y-e.y,n=this.z-e.z;return Math.sqrt(t*t+o*o+n*n)}},lockedRotation={yaw:o.yaw,pitch:o.pitch,roll:o.roll,clone:function(){return{yaw:this.yaw,pitch:this.pitch,roll:this.roll}}};let n={};try{"function"==typeof WALK.View?(n=new WALK.View,n.position=lockedPosition,n.rotation=lockedRotation):n={position:lockedPosition,rotation:lockedRotation}}catch(e){console.error("Error creating View object:",e),n={position:lockedPosition,rotation:lockedRotation}}window._lockedCustomView=n,e.canvas&&(e.canvas.style.pointerEvents="none"),window._lockInterval&&clearInterval(window._lockInterval),window._lockInterval=setInterval((()=>{try{"function"==typeof e.switchToView&&e.switchToView(window._lockedCustomView,0)}catch(e){console.error("Error in position enforcement:",e)}}),50);document.getElementById("lock-button").classList.add("locked"),isScreenLocked=!0}catch(e){console.error("Error locking screen:",e)}else console.error("Viewer not available")}function unlockScreen(){const e=WALK.getViewer();if(e)try{window._lockInterval&&(clearInterval(window._lockInterval),window._lockInterval=null),e.navigation&&void 0!==e.navigation.enabled&&(e.navigation.enabled=!0),removeMovementBlockerOverlay();document.getElementById("lock-button").classList.remove("locked"),isScreenLocked=!1,lockedPosition=null,lockedRotation=null}catch(e){console.error("Error unlocking screen:",e)}else console.error("Viewer not available")}function createMovementBlockerOverlay(){removeMovementBlockerOverlay();const e=document.createElement("div");function t(e){return e.preventDefault(),e.stopPropagation(),!1}e.id="movement-blocker-overlay",e.style.position="absolute",e.style.top="0",e.style.left="0",e.style.width="100%",e.style.height="100%",e.style.backgroundColor="transparent",e.style.zIndex="999",e.style.cursor="not-allowed",e.addEventListener("mousedown",t,!0),e.addEventListener("mousemove",t,!0),e.addEventListener("mouseup",t,!0),e.addEventListener("wheel",t,!0),e.addEventListener("touchstart",t,!0),e.addEventListener("touchmove",t,!0),e.addEventListener("touchend",t,!0);const o=document.querySelector("canvas");if(o&&o.parentNode){o.parentNode.appendChild(e);const t=document.getElementById("lock-container");t&&(t.style.zIndex="1001")}else console.error("Could not find canvas element to block")}function removeMovementBlockerOverlay(){const e=document.getElementById("movement-blocker-overlay");e&&e.parentNode.removeChild(e)}function loadMaterialsConfig(){fetch("https://anupdg.github.io/oneloom/materials-config.json").then((e=>{if(!e.ok)throw new Error("Failed to load materials config");return e.json()})).then((e=>{materialsConfig=e,loadTexturesForMaterial(MATERIAL_NAME)})).catch((e=>{console.error("Error loading materials config:",e)}))}function loadTexturesForMaterial(e){if(!materialsConfig||!materialsConfig.materials[e])return void console.error("Material not found:",e);const t=document.getElementById("texture-container");t.innerHTML="";materialsConfig.materials[e].textures.forEach((o=>{const n=document.createElement("div");let i;n.className="texture-item",n.dataset.id=o.id,"video"===o.type?(i=document.createElement("video"),i.autoplay=!0,i.muted=!0,i.loop=!0):i=document.createElement("img"),i.id=o.id,i.src=o.url,i.crossOrigin="anonymous";const r=document.createElement("div");r.className="texture-label",r.textContent=o.id,n.appendChild(i),n.appendChild(r),t.appendChild(n),n.addEventListener("click",(function(){document.querySelectorAll(".texture-item").forEach((e=>{e.classList.remove("selected")})),n.classList.add("selected"),applyTextureToMaterial(e,o)}))}))}function applyTextureToMaterial(e,t){const o=WALK.getViewer();if(!o)return void console.error("Viewer not available");const n=document.getElementById(t.id);if(!n)return void console.error("Texture element not found:",t.id);let i=textureCache[t.id];i||(i="video"===t.type?o.createTextureFromHtmlVideo(n):o.createTextureFromHtmlImage(n),textureCache[t.id]=i);const r=o.findMaterial(e);r?(r.baseColorTexture=i,window.selection={material:e,texture:t.id},sendSelectionUpdate(),o.requestFrame()):console.error("Material not found:",e)}function sendSelectionUpdate(){window.parent.postMessage({type:"SELECTION_UPDATE",payload:{selection:window.selection}},"*")}function initViewer(){const e=WALK.getViewer();e?(e.setMaterialEditable(MATERIAL_NAME),loadMaterialsConfig(),"function"==typeof e.onApiUserStateChanged&&e.onApiUserStateChanged((function(e,t){if(e.startsWith("MaterialPicker:")){const o=e.replace("MaterialPicker:","");window.selection={material:o,texture:t},sendSelectionUpdate()}})),window.addEventListener("message",(function(e){e.data&&"GET_SELECTION"===e.data.type&&sendSelectionUpdate()}))):setTimeout(initViewer,500)}document.addEventListener("DOMContentLoaded",(function(){createPickerUI(),createLockButton(),initViewer()}));
+// Initialize the global selection object
+window.selection = {
+  material: null,
+  texture: null
+};
+
+// Store materials configuration
+let materialsConfig = null;
+
+// Store textures cache
+const textureCache = {};
+
+// Hardcoded material name - change this when needed
+// const MATERIAL_NAME = "Wall plaster";
+const MATERIAL_NAME = "ceiling";
+
+// Variable to track locked state
+let isScreenLocked = false;
+
+// Variable to store the position when locked
+let lockedPosition = null;
+let lockedRotation = null;
+
+// Function to create the texture picker UI
+function createPickerUI() {
+  // Create the main container
+  const picker = document.createElement('div');
+  picker.id = 'picker';
+  picker.className = 'collapsed';
+
+  // Add positioning styles
+  picker.style.position = 'absolute';
+  picker.style.top = '30%';  // Position it above the middle
+  picker.style.left = '20px';
+  picker.style.zIndex = '1000';
+  
+  // Create the toggle button
+  const toggleButton = document.createElement('button');
+  toggleButton.id = 'toggle-picker';
+  toggleButton.textContent = '→';
+  
+  // Create the content container
+  const pickerContent = document.createElement('div');
+  pickerContent.id = 'picker-content';
+  
+  // Create the header
+  const header = document.createElement('h3');
+  header.textContent = 'Textures';
+  
+  // Create the texture container
+  const textureContainer = document.createElement('div');
+  textureContainer.className = 'texture-container';
+  textureContainer.id = 'texture-container';
+  
+  // Assemble the components
+  pickerContent.appendChild(header);
+  pickerContent.appendChild(textureContainer);
+  
+  picker.appendChild(toggleButton);
+  picker.appendChild(pickerContent);
+  
+  // Add to the document
+  document.body.appendChild(picker);
+  
+  // Add toggle button event listener
+  toggleButton.addEventListener('click', function() {
+    picker.classList.toggle('collapsed');
+    
+    // Update button text with arrow icons
+    if (picker.classList.contains('collapsed')) {
+      this.textContent = '→';
+    } else {
+      this.textContent = '←';
+    }
+  });
+}
+
+// Function to create lock button UI (separate from picker)
+function createLockButton() {
+  // Create the lock button container
+  const lockContainer = document.createElement('div');
+  lockContainer.id = 'lock-container';
+  lockContainer.style.position = 'absolute';
+  lockContainer.style.top  = '50%';
+  lockContainer.style.right = '20px';
+  lockContainer.style.transform = 'translateY(-50%)'; 
+  lockContainer.style.zIndex = '1000';
+  
+  // Create the lock button
+  const lockButton = document.createElement('button');
+  lockButton.id = 'lock-button';
+  lockButton.className = 'lock-button';
+  lockButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>';
+  lockButton.addEventListener('click', toggleScreenLock);
+  
+  lockContainer.appendChild(lockButton);
+  document.body.appendChild(lockContainer);
+}
+
+// Function to toggle screen lock
+function toggleScreenLock() {
+  if (isScreenLocked) {
+    unlockScreen();
+  } else {
+    lockScreen();
+  }
+}
+
+// Function to lock the screen
+function lockScreen() {
+  const viewer = WALK.getViewer();
+  if (!viewer) {
+    console.error('Viewer not available');
+    return;
+  }
+  
+  try {
+    // Get the current position and rotation values
+    const currentPos = viewer.getCameraPosition();
+    const currentRot = viewer.getCameraRotation();
+    
+    // Create deep copies of position and rotation
+    lockedPosition = {
+      x: currentPos.x,
+      y: currentPos.y,
+      z: currentPos.z,
+      clone: function() { return { x: this.x, y: this.y, z: this.z }; },
+      distanceTo: function(other) {
+        const dx = this.x - other.x;
+        const dy = this.y - other.y;
+        const dz = this.z - other.z;
+        return Math.sqrt(dx*dx + dy*dy + dz*dz);
+      }
+    };
+    
+    lockedRotation = {
+      yaw: currentRot.yaw,
+      pitch: currentRot.pitch,
+      roll: currentRot.roll,
+      clone: function() { return { yaw: this.yaw, pitch: this.pitch, roll: this.roll }; }
+    };
+    
+    // Create a custom view definition
+    let customView = {};
+    
+    try {
+      if (typeof WALK.View === 'function') {
+        customView = new WALK.View();
+        customView.position = lockedPosition;
+        customView.rotation = lockedRotation;
+      } else {
+        customView = {
+          position: lockedPosition,
+          rotation: lockedRotation
+        };
+      }
+    } catch (e) {
+      console.error('Error creating View object:', e);
+      customView = {
+        position: lockedPosition,
+        rotation: lockedRotation
+      };
+    }
+    
+    // Store the view for later use
+    window._lockedCustomView = customView;
+    
+    // Instead of creating an overlay, we'll install event handlers directly on the canvas
+    setupCanvasEventHandlers();
+    
+    // Create a more aggressive position enforcement
+    if (window._lockInterval) {
+      clearInterval(window._lockInterval);
+    }
+    
+    // Use a frequent interval to enforce position
+    window._lockInterval = setInterval(() => {
+      try {
+        // Force the camera to stay exactly at our locked position
+        if (typeof viewer.switchToView === 'function') {
+          viewer.switchToView(window._lockedCustomView, 0); // instant switch
+        }
+        
+        // Additional enforcement - directly set position and rotation if possible
+        if (viewer.camera) {
+          if (viewer.camera.position) {
+            viewer.camera.position.x = lockedPosition.x;
+            viewer.camera.position.y = lockedPosition.y;
+            viewer.camera.position.z = lockedPosition.z;
+          }
+          
+          if (viewer.camera.rotation) {
+            viewer.camera.rotation.x = lockedRotation.pitch;
+            viewer.camera.rotation.y = lockedRotation.yaw;
+            viewer.camera.rotation.z = lockedRotation.roll;
+          }
+        }
+        
+        // Force disabling navigation if it exists
+        if (viewer.navigation && typeof viewer.navigation.enabled !== 'undefined') {
+          viewer.navigation.enabled = false;
+        }
+        
+        // Force disabling controls if they exist
+        if (viewer.controls && typeof viewer.controls.enabled !== 'undefined') {
+          viewer.controls.enabled = false;
+        }
+      } catch (e) {
+        console.error('Error in position enforcement:', e);
+      }
+    }, 10); // Check very frequently (10ms)
+    
+    // Try to disable keyboard movement as well by installing a keyboard event handler
+    document.addEventListener('keydown', blockNavigationKeys);
+    
+    // Update the lock button to show locked state
+    const lockButton = document.getElementById('lock-button');
+    if (lockButton) {
+      lockButton.classList.add('locked');
+    }
+    
+    // Update state
+    isScreenLocked = true;
+  } catch (error) {
+    console.error('Error locking screen:', error);
+  }
+}
+
+// Function to unlock the screen
+function unlockScreen() {
+  const viewer = WALK.getViewer();
+  if (!viewer) {
+    console.error('Viewer not available');
+    return;
+  }
+  
+  try {
+    // Clear the interval that enforces position
+    if (window._lockInterval) {
+      clearInterval(window._lockInterval);
+      window._lockInterval = null;
+    }
+    
+    // Remove event handlers
+    removeCanvasEventHandlers();
+    
+    // Remove keyboard event handler
+    document.removeEventListener('keydown', blockNavigationKeys);
+    
+    // Re-enable controls if they exist
+    if (viewer.controls && typeof viewer.controls.enabled !== 'undefined') {
+      viewer.controls.enabled = true;
+    }
+    
+    // Re-enable navigation if it exists
+    if (viewer.navigation && typeof viewer.navigation.enabled !== 'undefined') {
+      viewer.navigation.enabled = true;
+    }
+    
+    // Update the lock button to show unlocked state
+    const lockButton = document.getElementById('lock-button');
+    if (lockButton) {
+      lockButton.classList.remove('locked');
+    }
+    
+    // Update state
+    isScreenLocked = false;
+    
+    // Clear stored position
+    lockedPosition = null;
+    lockedRotation = null;
+  } catch (error) {
+    console.error('Error unlocking screen:', error);
+  }
+}
+
+// Block navigation keys
+function blockNavigationKeys(e) {
+  // Only block if screen is locked
+  if (!isScreenLocked) return;
+  
+  // List of key codes used for navigation
+  const navigationKeys = [
+    'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', // Arrow keys
+    'w', 'a', 's', 'd', 'W', 'A', 'S', 'D',           // WASD
+    ' '                                               // Space (jump)
+  ];
+  
+  if (navigationKeys.includes(e.key)) {
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
+  }
+}
+
+// Setup canvas event handlers instead of using an overlay
+function setupCanvasEventHandlers() {
+  // Find the canvas
+  const canvas = document.querySelector('canvas');
+  if (!canvas) {
+    console.error('Canvas element not found');
+    return;
+  }
+  
+  // Store original event handlers if needed
+  window._originalPointerEvents = canvas.style.pointerEvents;
+  
+  // Add a property to track that we're in locked mode
+  canvas._lockHandlersInstalled = true;
+  
+  // Function to intercept and block navigation events on the canvas
+  function blockNavigation(e) {
+    // Always prevent default for these navigation events on the canvas
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
+  }
+  
+  // Install handlers directly on the canvas
+  canvas.addEventListener('mousedown', blockNavigation, true);
+  canvas.addEventListener('mousemove', blockNavigation, true);
+  canvas.addEventListener('mouseup', blockNavigation, true);
+  canvas.addEventListener('wheel', blockNavigation, true);
+  canvas.addEventListener('touchstart', blockNavigation, true);
+  canvas.addEventListener('touchmove', blockNavigation, true);
+  canvas.addEventListener('touchend', blockNavigation, true);
+  
+  // Store references to the handlers for later removal
+  canvas._blockNavigation = blockNavigation;
+  
+  // Set the canvas to not receive any pointer events
+  // This effectively makes the canvas "transparent" to pointer events
+  // allowing UI elements to receive events instead
+  canvas.style.pointerEvents = 'none';
+  
+  // Additionally, try to target the actual Shapespark navigation component if it exists
+  const viewer = WALK.getViewer();
+  if (viewer && viewer.navigation) {
+    // Try different approaches to disable navigation
+    if (typeof viewer.navigation.enabled !== 'undefined') {
+      viewer.navigation.enabled = false;
+    }
+    
+    // Some Shapespark versions may have different properties
+    if (viewer.navigation.domElement) {
+      viewer.navigation.domElement.style.pointerEvents = 'none';
+    }
+  }
+  
+  // Force disable any controls
+  if (viewer && viewer.controls) {
+    if (typeof viewer.controls.enabled !== 'undefined') {
+      viewer.controls.enabled = false;
+    }
+  }
+}
+
+// Remove the canvas event handlers
+function removeCanvasEventHandlers() {
+  const canvas = document.querySelector('canvas');
+  if (!canvas || !canvas._lockHandlersInstalled) {
+    return;
+  }
+  
+  // Remove the handlers
+  if (canvas._blockNavigation) {
+    canvas.removeEventListener('mousedown', canvas._blockNavigation, true);
+    canvas.removeEventListener('mousemove', canvas._blockNavigation, true);
+    canvas.removeEventListener('mouseup', canvas._blockNavigation, true);
+    canvas.removeEventListener('wheel', canvas._blockNavigation, true);
+    canvas.removeEventListener('touchstart', canvas._blockNavigation, true);
+    canvas.removeEventListener('touchmove', canvas._blockNavigation, true);
+    canvas.removeEventListener('touchend', canvas._blockNavigation, true);
+  }
+  
+  // Restore original pointer events
+  canvas.style.pointerEvents = window._originalPointerEvents || '';
+  
+  // Remove the tracking property
+  canvas._lockHandlersInstalled = false;
+  
+  // Re-enable Shapespark navigation if it exists
+  const viewer = WALK.getViewer();
+  if (viewer && viewer.navigation) {
+    if (typeof viewer.navigation.enabled !== 'undefined') {
+      viewer.navigation.enabled = true;
+    }
+    
+    if (viewer.navigation.domElement) {
+      viewer.navigation.domElement.style.pointerEvents = '';
+    }
+  }
+  
+  // Re-enable controls
+  if (viewer && viewer.controls) {
+    if (typeof viewer.controls.enabled !== 'undefined') {
+      viewer.controls.enabled = true;
+    }
+  }
+}
+
+// Initialize the UI when the document is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  // Create the picker UI
+  createPickerUI();
+  
+  // Create the lock button (separate from picker)
+  createLockButton();
+    
+  // Start viewer initialization
+  initViewer();
+});
+
+// Load materials configuration
+function loadMaterialsConfig() {
+  fetch('https://anupdg.github.io/oneloom/materials-config.json')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to load materials config');
+      }
+      return response.json();
+    })
+    .then(config => {
+      materialsConfig = config;
+      loadTexturesForMaterial(MATERIAL_NAME);
+    })
+    .catch(error => {
+      console.error('Error loading materials config:', error);
+    });
+}
+
+// Load textures for the selected material
+function loadTexturesForMaterial(materialName) {
+  if (!materialsConfig || !materialsConfig.materials[materialName]) {
+    console.error('Material not found:', materialName);
+    return;
+  }
+  
+  const textureContainer = document.getElementById('texture-container');
+  textureContainer.innerHTML = '';
+  
+  const textures = materialsConfig.materials[materialName].textures;
+  textures.forEach(texture => {
+    const textureItem = document.createElement('div');
+    textureItem.className = 'texture-item';
+    textureItem.dataset.id = texture.id;
+    
+    let element;
+    if (texture.type === 'video') {
+      element = document.createElement('video');
+      element.autoplay = true;
+      element.muted = true;
+      element.loop = true;
+    } else {
+      element = document.createElement('img');
+    }
+    
+    element.id = texture.id;
+    element.src = texture.url;
+    element.crossOrigin = 'anonymous';
+    
+    const label = document.createElement('div');
+    label.className = 'texture-label';
+    label.textContent = texture.id;
+    
+    textureItem.appendChild(element);
+    textureItem.appendChild(label);
+    textureContainer.appendChild(textureItem);
+    
+    // Add click handler
+    textureItem.addEventListener('click', function() {
+      // Remove selected class from all textures
+      document.querySelectorAll('.texture-item').forEach(item => {
+        item.classList.remove('selected');
+      });
+      
+      // Add selected class to this texture
+      textureItem.classList.add('selected');
+      
+      // Apply texture to material
+      applyTextureToMaterial(materialName, texture);
+    });
+  });
+}
+
+// Apply texture to material
+function applyTextureToMaterial(materialName, textureConfig) {
+  const viewer = WALK.getViewer();
+  if (!viewer) {
+    console.error('Viewer not available');
+    return;
+  }
+  
+  const element = document.getElementById(textureConfig.id);
+  if (!element) {
+    console.error('Texture element not found:', textureConfig.id);
+    return;
+  }
+  
+  // Get or create texture
+  let texture = textureCache[textureConfig.id];
+  if (!texture) {
+    if (textureConfig.type === 'video') {
+      texture = viewer.createTextureFromHtmlVideo(element);
+    } else {
+      texture = viewer.createTextureFromHtmlImage(element);
+    }
+    textureCache[textureConfig.id] = texture;
+  }
+  
+  // Find material and apply texture
+  const material = viewer.findMaterial(materialName);
+  if (!material) {
+    console.error('Material not found:', materialName);
+    return;
+  }
+  
+  material.baseColorTexture = texture;
+  
+  // Update selection object
+  window.selection = {
+    material: materialName,
+    texture: textureConfig.id
+  };
+  
+  // Send the selection to the parent window
+  sendSelectionUpdate();
+  
+  // Force the frame to be rendered
+  viewer.requestFrame();
+}
+
+// Function to send selection updates to parent window
+function sendSelectionUpdate() {
+  window.parent.postMessage({
+    type: 'SELECTION_UPDATE',
+    payload: {
+      selection: window.selection
+    }
+  }, '*');  // In production, replace '*' with your actual origin
+}
+
+// Initialize the viewer
+function initViewer() {
+  const viewer = WALK.getViewer();
+  if (!viewer) {
+    // If viewer is not yet available, try again after a delay
+    setTimeout(initViewer, 500);
+    return;
+  }
+  
+  // Set hardcoded material as editable
+  viewer.setMaterialEditable(MATERIAL_NAME);
+  
+  // Load materials configuration and initialize UI
+  loadMaterialsConfig();
+  
+  // Setup listener for Shapespark's built-in material picker events
+  if (typeof viewer.onApiUserStateChanged === 'function') {
+    viewer.onApiUserStateChanged(function(key, value) {
+      
+      // Only process MaterialPicker events
+      if (key.startsWith("MaterialPicker:")) {
+        // Parse the key to get the material name (removing the "MaterialPicker:" prefix)
+        const material = key.replace("MaterialPicker:", "");
+        
+        // Update the selection object with the material picker selection
+        window.selection = {
+          material: material,
+          texture: value
+        };
+        // Send the updated selection to the parent window
+        sendSelectionUpdate();
+      }
+    });
+  } else {
+  }
+  
+  // Handle messages from parent window
+  window.addEventListener('message', function(event) {
+    if (event.data && event.data.type === 'GET_SELECTION') {
+      // Send the current selection to the parent window
+      sendSelectionUpdate();
+    }
+  });
+}
