@@ -140,6 +140,77 @@ function lockScreen() {
       clone: function() { return { yaw: this.yaw, pitch: this.pitch, roll: this.roll }; }
     };
     
+    // Store current view name if available
+    window._lockedViewName = null;
+    try {
+      // Try to get the current view name if this information is available
+      if (viewer.getCurrentViewName) {
+        window._lockedViewName = viewer.getCurrentViewName();
+      }
+    } catch (e) {
+      console.error('Error getting current view name:', e);
+    }
+    
+    // IMPORTANT: Track when view transitions are happening
+    window._isViewTransitioning = false;
+    
+    // Hook into view switch events if available
+    if (typeof viewer.onViewSwitchStarted === 'function') {
+      // Create a tracking function to catch view switch events
+      window._viewSwitchStartedHandler = function(viewName) {
+        window._isViewTransitioning = true;
+        window._lockedViewName = viewName; // Update the target view name
+        console.log('View transition started to:', viewName);
+      };
+      
+      viewer.onViewSwitchStarted(window._viewSwitchStartedHandler);
+    }
+    
+    if (typeof viewer.onViewSwitchDone === 'function') {
+      // Create a function to update our position when a view switch is done
+      window._viewSwitchDoneHandler = function(viewName) {
+        window._isViewTransitioning = false;
+        
+        // Update our locked position and rotation to the new view
+        const newPos = viewer.getCameraPosition();
+        const newRot = viewer.getCameraRotation();
+        
+        // Update the locked position
+        lockedPosition.x = newPos.x;
+        lockedPosition.y = newPos.y;
+        lockedPosition.z = newPos.z;
+        
+        // Update the locked rotation
+        lockedRotation.yaw = newRot.yaw;
+        lockedRotation.pitch = newRot.pitch;
+        lockedRotation.roll = newRot.roll;
+        
+        // Create a new custom view based on the new position
+        try {
+          if (typeof WALK.View === 'function') {
+            window._lockedCustomView = new WALK.View();
+            window._lockedCustomView.position = lockedPosition;
+            window._lockedCustomView.rotation = lockedRotation;
+          } else {
+            window._lockedCustomView = {
+              position: lockedPosition,
+              rotation: lockedRotation
+            };
+          }
+        } catch (e) {
+          console.error('Error creating view object after transition:', e);
+          window._lockedCustomView = {
+            position: lockedPosition,
+            rotation: lockedRotation
+          };
+        }
+        
+        console.log('View transition completed to:', viewName);
+      };
+      
+      viewer.onViewSwitchDone(window._viewSwitchDoneHandler);
+    }
+    
     // Create a custom view definition
     let customView = {};
     
@@ -165,10 +236,19 @@ function lockScreen() {
     // Store the view for later use
     window._lockedCustomView = customView;
     
-    // Instead of creating an overlay, we'll install event handlers directly on the canvas
+    // Instead of setting pointerEvents='none' which disables all interactions,
+    // we'll use a more targeted approach to maintain UI functionality
+    
+    // Find the room selector buttons and make sure they stay interactive
+    const roomButtons = document.querySelectorAll('.view-menu a, [data-view], [data-viewid], [data-roomid]');
+    roomButtons.forEach(button => {
+      if (button) button.style.zIndex = '2000';
+    });
+    
+    // Setup canvas event handlers instead of using an overlay
     setupCanvasEventHandlers();
     
-    // Create a more aggressive position enforcement
+    // Create a more aggressive position enforcement that respects view transitions
     if (window._lockInterval) {
       clearInterval(window._lockInterval);
     }
@@ -176,6 +256,11 @@ function lockScreen() {
     // Use a frequent interval to enforce position
     window._lockInterval = setInterval(() => {
       try {
+        // If we're in the middle of a view transition, don't enforce position
+        if (window._isViewTransitioning) {
+          return;
+        }
+        
         // Force the camera to stay exactly at our locked position
         if (typeof viewer.switchToView === 'function') {
           viewer.switchToView(window._lockedCustomView, 0); // instant switch
@@ -195,20 +280,10 @@ function lockScreen() {
             viewer.camera.rotation.z = lockedRotation.roll;
           }
         }
-        
-        // Force disabling navigation if it exists
-        if (viewer.navigation && typeof viewer.navigation.enabled !== 'undefined') {
-          viewer.navigation.enabled = false;
-        }
-        
-        // Force disabling controls if they exist
-        if (viewer.controls && typeof viewer.controls.enabled !== 'undefined') {
-          viewer.controls.enabled = false;
-        }
       } catch (e) {
         console.error('Error in position enforcement:', e);
       }
-    }, 10); // Check very frequently (10ms)
+    }, 20); // Slightly longer interval to reduce CPU usage
     
     // Try to disable keyboard movement as well by installing a keyboard event handler
     document.addEventListener('keydown', blockNavigationKeys);
@@ -247,6 +322,27 @@ function unlockScreen() {
     // Remove keyboard event handler
     document.removeEventListener('keydown', blockNavigationKeys);
     
+    // Remove view switch handlers
+    if (typeof viewer.onViewSwitchStarted === 'function' && window._viewSwitchStartedHandler) {
+      // Remove the handler (if the API supports this)
+      try {
+        viewer.offViewSwitchStarted(window._viewSwitchStartedHandler);
+      } catch (e) {
+        // Some versions might not support 'off' methods, so we'll just swallow the error
+      }
+      window._viewSwitchStartedHandler = null;
+    }
+    
+    if (typeof viewer.onViewSwitchDone === 'function' && window._viewSwitchDoneHandler) {
+      // Remove the handler (if the API supports this)
+      try {
+        viewer.offViewSwitchDone(window._viewSwitchDoneHandler);
+      } catch (e) {
+        // Some versions might not support 'off' methods, so we'll just swallow the error
+      }
+      window._viewSwitchDoneHandler = null;
+    }
+    
     // Re-enable controls if they exist
     if (viewer.controls && typeof viewer.controls.enabled !== 'undefined') {
       viewer.controls.enabled = true;
@@ -269,6 +365,9 @@ function unlockScreen() {
     // Clear stored position
     lockedPosition = null;
     lockedRotation = null;
+    window._lockedCustomView = null;
+    window._lockedViewName = null;
+    window._isViewTransitioning = false;
   } catch (error) {
     console.error('Error unlocking screen:', error);
   }
@@ -310,7 +409,25 @@ function setupCanvasEventHandlers() {
   
   // Function to intercept and block navigation events on the canvas
   function blockNavigation(e) {
-    // Always prevent default for these navigation events on the canvas
+    // Get the target element
+    const target = e.target;
+    
+    // Check if the target is a UI element that should still work
+    // This includes room selector buttons, material pickers, etc.
+    const isUIElement = target.closest('.view-menu') || 
+                        target.closest('[data-view]') || 
+                        target.closest('[data-viewid]') || 
+                        target.closest('[data-roomid]') || 
+                        target.closest('.material-picker') || 
+                        target.closest('#picker') ||
+                        target.closest('#lock-container');
+    
+    // If it's a UI element, allow the event to pass through
+    if (isUIElement) {
+      return true;
+    }
+    
+    // Otherwise, block the event to prevent camera movement
     e.preventDefault();
     e.stopPropagation();
     return false;
@@ -328,31 +445,26 @@ function setupCanvasEventHandlers() {
   // Store references to the handlers for later removal
   canvas._blockNavigation = blockNavigation;
   
-  // Set the canvas to not receive any pointer events
-  // This effectively makes the canvas "transparent" to pointer events
-  // allowing UI elements to receive events instead
-  canvas.style.pointerEvents = 'none';
+  // We'll use a targeted approach instead of making the entire canvas click-through
+  // This allows the UI elements to work while still blocking camera movement
   
   // Additionally, try to target the actual Shapespark navigation component if it exists
   const viewer = WALK.getViewer();
   if (viewer && viewer.navigation) {
     // Try different approaches to disable navigation
     if (typeof viewer.navigation.enabled !== 'undefined') {
-      viewer.navigation.enabled = false;
-    }
-    
-    // Some Shapespark versions may have different properties
-    if (viewer.navigation.domElement) {
-      viewer.navigation.domElement.style.pointerEvents = 'none';
+      // Don't completely disable navigation as it may affect view switching
+      // Instead, we'll rely on the position enforcement
     }
   }
   
-  // Force disable any controls
-  if (viewer && viewer.controls) {
-    if (typeof viewer.controls.enabled !== 'undefined') {
-      viewer.controls.enabled = false;
+  // Make sure UI elements like room selectors are elevated and clickable
+  document.querySelectorAll('.view-menu, [data-view], [data-viewid], [data-roomid], .material-picker, #picker, #lock-container').forEach(el => {
+    if (el) {
+      el.style.zIndex = '2000';
+      el.style.pointerEvents = 'auto';
     }
-  }
+  });
 }
 
 // Remove the canvas event handlers
@@ -391,12 +503,13 @@ function removeCanvasEventHandlers() {
     }
   }
   
-  // Re-enable controls
-  if (viewer && viewer.controls) {
-    if (typeof viewer.controls.enabled !== 'undefined') {
-      viewer.controls.enabled = true;
+  // Reset z-index and pointer-events for UI elements
+  document.querySelectorAll('.view-menu, [data-view], [data-viewid], [data-roomid], .material-picker, #picker, #lock-container').forEach(el => {
+    if (el) {
+      el.style.zIndex = '';
+      el.style.pointerEvents = '';
     }
-  }
+  });
 }
 
 // Initialize the UI when the document is loaded
