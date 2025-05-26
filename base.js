@@ -138,11 +138,11 @@ function lockScreen() {
       try {
         const currentPos = viewer.getCameraPosition();
         
-        // Check if position has changed significantly (tighter tolerance for faster response)
+        // Check if position has changed significantly 
         const hasMovedPosition = 
-          Math.abs(currentPos.x - lockedPosition.x) > 0.02 || 
-          Math.abs(currentPos.y - lockedPosition.y) > 0.02 || 
-          Math.abs(currentPos.z - lockedPosition.z) > 0.02;
+          Math.abs(currentPos.x - lockedPosition.x) > 0.03 || 
+          Math.abs(currentPos.y - lockedPosition.y) > 0.03 || 
+          Math.abs(currentPos.z - lockedPosition.z) > 0.03;
         
         // If position changed significantly, reset it immediately but preserve rotation
         if (hasMovedPosition) {
@@ -177,7 +177,7 @@ function lockScreen() {
       } catch (e) {
         console.error('Error in position enforcement:', e);
       }
-    }, 16); // Check every 16ms (~60fps) for immediate response
+    }, 25); // Check every 25ms for good balance between responsiveness and performance
     
     // Update the lock button to show locked state
     const lockButton = document.getElementById('lock-button');
@@ -230,7 +230,7 @@ function unlockScreen() {
   }
 }
 
-// Setup selective movement blocking - prevent teleportation flicker
+// Setup selective movement blocking - prevent teleportation flicker while preserving UI
 function setupMovementBlocker() {
   const canvas = document.querySelector('canvas');
   if (!canvas) {
@@ -238,13 +238,16 @@ function setupMovementBlocker() {
     return;
   }
   
-  // Track mouse state for better click detection
+  // Track mouse state and recent interactions
   let mouseDownTime = 0;
   let mouseDownPos = null;
   let isDragging = false;
+  let lastClickTime = 0;
+  let recentMovementAttempts = 0;
+  let blockingActive = false;
   
-  // More aggressive blocking function to prevent flicker
-  function preventTeleportation(e) {
+  // Smart blocking function that learns from user behavior
+  function smartPreventTeleportation(e) {
     if (!isScreenLocked) return;
     
     // Always allow interactions with our custom UI elements
@@ -262,23 +265,23 @@ function setupMovementBlocker() {
       target = target.parentNode;
     }
     
-    // Block mouse wheel (zoom)
+    // Always block mouse wheel (zoom)
     if (e.type === 'wheel') {
       e.preventDefault();
       e.stopPropagation();
       return false;
     }
     
-    // For canvas events, be more aggressive about blocking teleportation
+    // For canvas events, use smart detection
     if (e.target === canvas || e.target.tagName === 'CANVAS') {
       
-      // Track mouse down for drag detection
+      // Track mouse down
       if (e.type === 'mousedown') {
         mouseDownTime = Date.now();
         mouseDownPos = { x: e.clientX, y: e.clientY };
         isDragging = false;
-        // Allow mousedown for rotation
-        return true;
+        blockingActive = false;
+        return true; // Always allow mousedown
       }
       
       // Track mouse movement to detect dragging (rotation)
@@ -287,44 +290,71 @@ function setupMovementBlocker() {
           Math.pow(e.clientX - mouseDownPos.x, 2) + 
           Math.pow(e.clientY - mouseDownPos.y, 2)
         );
-        if (distance > 5) { // 5px threshold
+        if (distance > 3) { // Lower threshold for drag detection
           isDragging = true;
         }
-        // Allow mouse move during drag
-        return true;
+        return true; // Always allow mouse move
       }
       
-      // Handle mouse up and clicks more aggressively
+      // Handle mouse up - be more permissive
       if (e.type === 'mouseup') {
-        const wasQuickClick = (Date.now() - mouseDownTime) < 300;
-        const wasShortDrag = isDragging && (Date.now() - mouseDownTime) < 500;
-        
-        // Reset tracking
         mouseDownPos = null;
-        
-        // If it was a quick click or short drag, likely teleportation attempt
-        if (wasQuickClick && !isDragging) {
-          e.preventDefault();
-          e.stopPropagation();
-          return false;
-        }
-        
-        // Allow longer drags (rotation)
-        return true;
+        return true; // Allow mouse up
       }
       
-      // Block all click events more aggressively to prevent teleportation flicker
+      // Handle clicks with smart detection
       if (e.type === 'click') {
-        // Check if this was part of a drag operation
-        if (!isDragging) {
+        const now = Date.now();
+        const timeSinceLastClick = now - lastClickTime;
+        lastClickTime = now;
+        
+        // If user is clicking very quickly (spam clicking), start blocking
+        if (timeSinceLastClick < 500) {
+          recentMovementAttempts++;
+          if (recentMovementAttempts >= 2) {
+            blockingActive = true;
+          }
+        } else {
+          // Reset counter for slow clicks
+          recentMovementAttempts = 0;
+          blockingActive = false;
+        }
+        
+        // If this was clearly a drag operation, allow it
+        if (isDragging) {
+          return true;
+        }
+        
+        // If blocking is active (user has been spam clicking), block it
+        if (blockingActive) {
           e.preventDefault();
           e.stopPropagation();
           return false;
         }
-        return true;
+        
+        // For the first click or slow clicks, allow them (might be UI)
+        // But set a timer to check if movement occurred
+        setTimeout(() => {
+          // Check if this click caused unwanted movement
+          if (isScreenLocked && lockedPosition) {
+            const currentPos = WALK.getViewer().getCameraPosition();
+            const hasMovedSignificantly = 
+              Math.abs(currentPos.x - lockedPosition.x) > 0.1 || 
+              Math.abs(currentPos.y - lockedPosition.y) > 0.1 || 
+              Math.abs(currentPos.z - lockedPosition.z) > 0.1;
+            
+            if (hasMovedSignificantly) {
+              // This click caused movement, so increase blocking sensitivity
+              recentMovementAttempts += 2;
+              blockingActive = true;
+            }
+          }
+        }, 50); // Check after 50ms
+        
+        return true; // Allow the click initially
       }
       
-      // Block double clicks completely
+      // Block double clicks more aggressively
       if (e.type === 'dblclick') {
         e.preventDefault();
         e.stopPropagation();
@@ -332,24 +362,23 @@ function setupMovementBlocker() {
       }
     }
     
-    // Allow all other events by default
     return true;
   }
   
-  // Add more comprehensive event blocking
-  canvas.addEventListener('wheel', preventTeleportation, true);
-  canvas.addEventListener('click', preventTeleportation, true);
-  canvas.addEventListener('dblclick', preventTeleportation, true);
-  canvas.addEventListener('mousedown', preventTeleportation, false); // Allow mousedown for rotation
-  canvas.addEventListener('mouseup', preventTeleportation, true);
-  canvas.addEventListener('mousemove', preventTeleportation, false); // Allow mousemove for rotation
+  // Add event listeners with the smart approach
+  canvas.addEventListener('wheel', smartPreventTeleportation, true);
+  canvas.addEventListener('click', smartPreventTeleportation, true);
+  canvas.addEventListener('dblclick', smartPreventTeleportation, true);
+  canvas.addEventListener('mousedown', smartPreventTeleportation, false);
+  canvas.addEventListener('mouseup', smartPreventTeleportation, false);
+  canvas.addEventListener('mousemove', smartPreventTeleportation, false);
   
-  // Block document-level events that could cause teleportation
-  document.addEventListener('wheel', preventTeleportation, true);
-  document.addEventListener('dblclick', preventTeleportation, true);
+  // Block document-level events
+  document.addEventListener('wheel', smartPreventTeleportation, true);
+  document.addEventListener('dblclick', smartPreventTeleportation, true);
   
   // Store the handler for cleanup
-  window._blockMovementHandler = preventTeleportation;
+  window._blockMovementHandler = smartPreventTeleportation;
 }
 
 // Remove movement blocking
@@ -365,7 +394,7 @@ function removeMovementBlocker() {
     canvas.removeEventListener('click', handler, true);
     canvas.removeEventListener('dblclick', handler, true);
     canvas.removeEventListener('mousedown', handler, false);
-    canvas.removeEventListener('mouseup', handler, true);
+    canvas.removeEventListener('mouseup', handler, false);
     canvas.removeEventListener('mousemove', handler, false);
   }
   
