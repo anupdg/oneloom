@@ -138,13 +138,13 @@ function lockScreen() {
       try {
         const currentPos = viewer.getCameraPosition();
         
-        // Check if position has changed significantly (allow small movements for UI interactions)
+        // Check if position has changed significantly (tighter tolerance for faster response)
         const hasMovedPosition = 
-          Math.abs(currentPos.x - lockedPosition.x) > 0.05 || 
-          Math.abs(currentPos.y - lockedPosition.y) > 0.05 || 
-          Math.abs(currentPos.z - lockedPosition.z) > 0.05;
+          Math.abs(currentPos.x - lockedPosition.x) > 0.02 || 
+          Math.abs(currentPos.y - lockedPosition.y) > 0.02 || 
+          Math.abs(currentPos.z - lockedPosition.z) > 0.02;
         
-        // If position changed significantly, reset it but preserve rotation
+        // If position changed significantly, reset it immediately but preserve rotation
         if (hasMovedPosition) {
           const currentRotation = viewer.getCameraRotation();
           
@@ -177,7 +177,7 @@ function lockScreen() {
       } catch (e) {
         console.error('Error in position enforcement:', e);
       }
-    }, 100); // Check every 100ms (less frequent to allow UI interactions)
+    }, 16); // Check every 16ms (~60fps) for immediate response
     
     // Update the lock button to show locked state
     const lockButton = document.getElementById('lock-button');
@@ -230,7 +230,7 @@ function unlockScreen() {
   }
 }
 
-// Setup selective movement blocking - much more permissive approach
+// Setup selective movement blocking - prevent teleportation flicker
 function setupMovementBlocker() {
   const canvas = document.querySelector('canvas');
   if (!canvas) {
@@ -238,28 +238,13 @@ function setupMovementBlocker() {
     return;
   }
   
-  // Track recent clicks to distinguish between UI clicks and movement attempts
-  let recentClicks = [];
-  let allowNextClick = false;
+  // Track mouse state for better click detection
+  let mouseDownTime = 0;
+  let mouseDownPos = null;
+  let isDragging = false;
   
-  function isRecentClick(x, y, timeMs = 1000) {
-    const now = Date.now();
-    return recentClicks.some(click => 
-      Math.abs(click.x - x) < 50 && 
-      Math.abs(click.y - y) < 50 && 
-      (now - click.time) < timeMs
-    );
-  }
-  
-  function addClick(x, y) {
-    const now = Date.now();
-    recentClicks.push({ x, y, time: now });
-    // Clean old clicks
-    recentClicks = recentClicks.filter(click => (now - click.time) < 2000);
-  }
-  
-  // Very selective blocking function
-  function selectiveBlockEvents(e) {
+  // More aggressive blocking function to prevent flicker
+  function preventTeleportation(e) {
     if (!isScreenLocked) return;
     
     // Always allow interactions with our custom UI elements
@@ -277,53 +262,94 @@ function setupMovementBlocker() {
       target = target.parentNode;
     }
     
-    // Block mouse wheel (zoom) but allow everything else to go through initially
+    // Block mouse wheel (zoom)
     if (e.type === 'wheel') {
       e.preventDefault();
       e.stopPropagation();
       return false;
     }
     
-    // For canvas events, be more permissive
+    // For canvas events, be more aggressive about blocking teleportation
     if (e.target === canvas || e.target.tagName === 'CANVAS') {
       
-      // Track clicks for pattern detection
-      if (e.type === 'click') {
-        const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+      // Track mouse down for drag detection
+      if (e.type === 'mousedown') {
+        mouseDownTime = Date.now();
+        mouseDownPos = { x: e.clientX, y: e.clientY };
+        isDragging = false;
+        // Allow mousedown for rotation
+        return true;
+      }
+      
+      // Track mouse movement to detect dragging (rotation)
+      if (e.type === 'mousemove' && mouseDownPos) {
+        const distance = Math.sqrt(
+          Math.pow(e.clientX - mouseDownPos.x, 2) + 
+          Math.pow(e.clientY - mouseDownPos.y, 2)
+        );
+        if (distance > 5) { // 5px threshold
+          isDragging = true;
+        }
+        // Allow mouse move during drag
+        return true;
+      }
+      
+      // Handle mouse up and clicks more aggressively
+      if (e.type === 'mouseup') {
+        const wasQuickClick = (Date.now() - mouseDownTime) < 300;
+        const wasShortDrag = isDragging && (Date.now() - mouseDownTime) < 500;
         
-        // Check if this is a repeated click in the same area (likely teleportation attempt)
-        if (isRecentClick(x, y, 500)) {
-          // This might be spam clicking for teleportation - block it
+        // Reset tracking
+        mouseDownPos = null;
+        
+        // If it was a quick click or short drag, likely teleportation attempt
+        if (wasQuickClick && !isDragging) {
           e.preventDefault();
           e.stopPropagation();
           return false;
         }
         
-        addClick(x, y);
-        
-        // Allow the first click in any area (might be UI interaction)
+        // Allow longer drags (rotation)
         return true;
       }
       
-      // Allow all mouse movements and other interactions
-      return true;
+      // Block all click events more aggressively to prevent teleportation flicker
+      if (e.type === 'click') {
+        // Check if this was part of a drag operation
+        if (!isDragging) {
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        }
+        return true;
+      }
+      
+      // Block double clicks completely
+      if (e.type === 'dblclick') {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
     }
     
     // Allow all other events by default
     return true;
   }
   
-  // Add minimal event blocking - only wheel events and spam clicks
-  canvas.addEventListener('wheel', selectiveBlockEvents, true);
-  canvas.addEventListener('click', selectiveBlockEvents, true);
+  // Add more comprehensive event blocking
+  canvas.addEventListener('wheel', preventTeleportation, true);
+  canvas.addEventListener('click', preventTeleportation, true);
+  canvas.addEventListener('dblclick', preventTeleportation, true);
+  canvas.addEventListener('mousedown', preventTeleportation, false); // Allow mousedown for rotation
+  canvas.addEventListener('mouseup', preventTeleportation, true);
+  canvas.addEventListener('mousemove', preventTeleportation, false); // Allow mousemove for rotation
   
-  // Also block document-level wheel to prevent zooming
-  document.addEventListener('wheel', selectiveBlockEvents, true);
+  // Block document-level events that could cause teleportation
+  document.addEventListener('wheel', preventTeleportation, true);
+  document.addEventListener('dblclick', preventTeleportation, true);
   
   // Store the handler for cleanup
-  window._blockMovementHandler = selectiveBlockEvents;
+  window._blockMovementHandler = preventTeleportation;
 }
 
 // Remove movement blocking
@@ -333,13 +359,18 @@ function removeMovementBlocker() {
   const canvas = document.querySelector('canvas');
   const handler = window._blockMovementHandler;
   
-  // Remove the minimal event listeners
+  // Remove all the event listeners
   if (canvas) {
     canvas.removeEventListener('wheel', handler, true);
     canvas.removeEventListener('click', handler, true);
+    canvas.removeEventListener('dblclick', handler, true);
+    canvas.removeEventListener('mousedown', handler, false);
+    canvas.removeEventListener('mouseup', handler, true);
+    canvas.removeEventListener('mousemove', handler, false);
   }
   
   document.removeEventListener('wheel', handler, true);
+  document.removeEventListener('dblclick', handler, true);
   
   window._blockMovementHandler = null;
 }
