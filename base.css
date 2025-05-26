@@ -83,4 +83,96 @@ select {
   font-size: 14px;
 }
 
+/* Enhanced Lock System Styles - Added to your existing CSS */
 
+/* Ensure Shapespark UI elements stay on top and interactive */
+.shapespark-viewer-menu,
+.shapespark-viewer-help,
+.shapespark-viewer-views,
+.shapespark-viewer-toolbar,
+.shapespark-camera-volume,
+.shapespark-trigger,
+[data-shapespark],
+.viewer-ui,
+.viewer-menu,
+.viewer-toolbar {
+  pointer-events: auto !important;
+  z-index: 9999 !important;
+}
+
+/* Ensure your custom picker UI stays accessible */
+#picker {
+  pointer-events: auto !important;
+  z-index: 1000;
+}
+
+#picker * {
+  pointer-events: auto !important;
+}
+
+/* Ensure lock button stays accessible */
+#lock-container,
+#lock-button {
+  pointer-events: auto !important;
+  z-index: 1000;
+}
+
+/* Style for when screen is locked - visual indicator */
+body.screen-locked {
+  cursor: default;
+}
+
+body.screen-locked canvas {
+  cursor: crosshair !important; /* Shows rotation is allowed */
+}
+
+/* Ensure any potential Shapespark overlay UI remains clickable */
+div[style*="position: absolute"],
+div[style*="position: fixed"] {
+  pointer-events: auto;
+}
+
+/* Material picker spheres and triggers should remain interactive */
+.material-picker-trigger,
+.shapespark-anchor,
+.shapespark-hotspot {
+  pointer-events: auto !important;
+  z-index: 999 !important;
+}
+
+/* Lock button enhanced styles */
+.lock-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(2px);
+}
+
+.lock-button:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+  transform: scale(1.05);
+}
+
+.lock-button.locked {
+  background-color: rgba(192, 57, 43, 0.8);
+  box-shadow: 0 0 10px rgba(192, 57, 43, 0.5);
+}
+
+.lock-button.locked:hover {
+  background-color: rgba(192, 57, 43, 1);
+  transform: scale(1.05);
+}
+
+.lock-button svg {
+  width: 20px;
+  height: 20px;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+}
