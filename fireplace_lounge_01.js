@@ -1,7 +1,7 @@
 
 async function loadExtensionsFromCoverJson() {
   try {
-    const response = await fetch('../cover.json'); // Use correct relative path
+    const response = await fetch('https://3d.oneloomxr.com/cover.json'); // Use correct relative path
     const data = await response.json();
 
     if (!data.extensions || !Array.isArray(data.extensions)) {
