@@ -1,5 +1,4 @@
 
-
 async function loadExtensionsFromCoverJson() {
   try {
     const response = await fetch('../cover.json'); // Use correct relative path
@@ -64,8 +63,10 @@ function setupHideAnchors(ext) {
   // Walk viewer API for anchor visibility control
 }
 
+e = WALK.getViewer();
+
 // Ensure this runs once scene is ready
-walk.ready.then(() => {
+e.onSceneReadyToDisplay(() => {
   console.log('Shapespark scene ready');
   loadExtensionsFromCoverJson();
 });
