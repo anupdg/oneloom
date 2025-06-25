@@ -5,6 +5,9 @@ function initViewer() {
 window.addEventListener("message", function (e) {
   if(e.data && "MATERIALS_EDITABLE" === e.data.type){
     console.log("MATERIALS_EDITABLE", e.data)
+    e.data.extensions.forEach(materialName => {
+      window.viewer.setMaterialEditable(materialName);
+    });
     
   }
 })
