@@ -1,20 +1,31 @@
 
-async function loadExtensionsFromCoverJson() {
-  try {
-    const url = new URL('/cover.json', window.location.origin).href;
-    const response = await fetch(url); // Use correct relative path
-    const data = await response.json();
 
-    if (!data.extensions || !Array.isArray(data.extensions)) {
-      console.warn('No extensions found in cover.json');
-      return;
+function loadCoverJsonWithAjax() {
+  const xhr = new XMLHttpRequest();
+  const url = 'https://3d.oneloomxr.com/cover.json';
+
+  xhr.open('GET', url, true);
+
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4) {
+      if (xhr.status === 200) {
+        try {
+          const data = JSON.parse(xhr.responseText);
+          if (Array.isArray(data.extensions)) {
+            handleExtensions(data.extensions);
+          } else {
+            console.warn('No valid extensions array found');
+          }
+        } catch (err) {
+          console.error('Failed to parse JSON:', err);
+        }
+      } else {
+        console.error('Failed to load cover.json. Status:', xhr.status);
+      }
     }
+  };
 
-    const extensions = data.extensions;
-    processExtensions(extensions);
-  } catch (err) {
-    console.error('Failed to load or parse cover.json:', err);
-  }
+  xhr.send();
 }
 
 function processExtensions(extensions) {
