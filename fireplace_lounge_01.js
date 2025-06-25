@@ -2,12 +2,6 @@ function initViewer() {
   window.viewer = WALK.getViewer();
 }
 
-function getViews(){
-  var views = window.viewer.getViews();
-  console.log("views", views)
-
-}
-
 window.addEventListener("message", function (e) {
   if(e.data && "MATERIALS_EDITABLE" === e.data.type){
     console.log("MATERIALS_EDITABLE", e.data)
@@ -19,5 +13,4 @@ window.addEventListener("message", function (e) {
 
 document.addEventListener("DOMContentLoaded", function () {
   initViewer();
-  getViews();
 });
