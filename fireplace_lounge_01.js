@@ -13,7 +13,7 @@ window.addEventListener("message", function (e) {
       window.viewer.setMaterialEditable(materialName);
     });
   }else if(e.data && "NODES_EDITABLE" === e.data.type){
-    console.log("MATERIALS_EDITABLE", e.data)
+    console.log("NODES_EDITABLE", e.data)
     e.data.nodes.forEach(node => {
       window.viewer.setNodeTypeEditable(node);
     });
