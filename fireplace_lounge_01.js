@@ -1,5 +1,9 @@
 function initViewer() {
   window.viewer = WALK.getViewer();
+
+  viewer.onNodeTypeClicked(function(node){
+    console.log("node", node);
+  });
 }
 
 window.addEventListener("message", function (e) {
