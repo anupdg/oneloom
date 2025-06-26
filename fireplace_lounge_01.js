@@ -12,6 +12,11 @@ window.addEventListener("message", function (e) {
     e.data.extensions.forEach(materialName => {
       window.viewer.setMaterialEditable(materialName);
     });
+  }else if(e.data && "NODES_EDITABLE" === e.data.type){
+    console.log("MATERIALS_EDITABLE", e.data)
+    e.data.nodes.forEach(node => {
+      window.viewer.setNodeTypeEditable(node);
+    });
   } else if(e.data && "GOTO_VIEW" === e.data.type){
     this.window.viewer.switchToView(e.data.view);
   }
