@@ -3,7 +3,6 @@ function initViewer() {
    ['ALORA_SOFA', 'Vernon Sofa', 'sofa'].forEach(node => {
       window.viewer.setNodeTypeEditable(node);
     });
-  window.viewer.setNodeTypeEditable(node);
   viewer.onNodeTypeClicked(function(node){
     console.log("node", node);
   });
