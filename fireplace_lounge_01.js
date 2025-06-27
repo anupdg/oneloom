@@ -1,8 +1,5 @@
 function initViewer() {
   window.viewer = WALK.getViewer();
-   //['ALORA_SOFA', 'Vernon Sofa', 'sofa'].forEach(node => {
-   //   window.viewer.setNodeTypeEditable(node);
-   //});
   viewer.onNodeTypeClicked(function(node){
     console.log("node", node);
   });
@@ -34,6 +31,6 @@ window.addEventListener("message", function (e) {
   }
 })
 
-//document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
   initViewer();
-//});
+});
