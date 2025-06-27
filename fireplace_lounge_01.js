@@ -20,13 +20,13 @@ window.addEventListener("message", function (e) {
   } else if(e.data && '0047F251-C4C9-4163-BD66-E78E2096AB0B' === e.data.type){
     this.window.viewer.switchToView(e.data.view);
   }else if(e.data && '980A9415-2888-4596-BDB0-37DE9CA99702' === e.data.type){
-    for(const nodeName in e.data.nodesTohide){
+    for (const nodeName of e.data.nodesTohide) {
       for (const node of viewer.findNodesOfType(nodeName)) {
         node.hide();  
       }
     }
     for (const node of viewer.findNodesOfType(e.data.node)) {
-        node.show();  
+      node.show();  
     }
   }
 })
