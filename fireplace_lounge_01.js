@@ -26,8 +26,8 @@ window.addEventListener("message", function (e) {
       }
     }
     for (const node of viewer.findNodesOfType(e.data.node)) {
-        node.hide();  
-      }
+        node.show();  
+    }
   }
 })
 
