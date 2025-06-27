@@ -23,13 +23,14 @@ window.addEventListener("message", function (e) {
     this.window.viewer.switchToView(e.data.view);
   }else if(e.data && '980A9415-2888-4596-BDB0-37DE9CA99702' === e.data.type){
     for (const nodeName of e.data.nodesTohide) {
-      for (const node of viewer.findNodesOfType(nodeName)) {
+      for (const node of window.viewer.findNodesOfType(nodeName)) {
         node.hide();  
       }
     }
-    for (const node of viewer.findNodesOfType(e.data.node)) {
+    for (const node of window.viewer.findNodesOfType(e.data.node)) {
       node.show();  
     }
+    window.viewer.requestFrame();
   }
 })
 
