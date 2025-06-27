@@ -33,6 +33,6 @@ window.addEventListener("message", function (e) {
   }
 })
 
-document.addEventListener("DOMContentLoaded", function () {
+//document.addEventListener("DOMContentLoaded", function () {
   initViewer();
-});
+//});
