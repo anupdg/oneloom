@@ -3,9 +3,16 @@ function initViewer() {
 
 
   window.viewer.onSceneReadyToDisplay = () => {
-    window.nodeNames.forEach(node => {
-      window.viewer.setNodeTypeEditable(node);
-    });
+
+    const intervalId = setInterval(() => {
+      if (window.nodeNames !== undefined) {
+        window.nodeNames.forEach(node => {
+          window.viewer.setNodeTypeEditable(node);
+        });
+
+        clearInterval(intervalId);
+      }
+    }, 100);
   };
 
   viewer.onNodeTypeClicked(function(node){
