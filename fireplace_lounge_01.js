@@ -6,6 +6,7 @@ function initViewer() {
 
     const intervalId = setInterval(() => {
       if (window.nodeNames !== undefined) {
+        console.log("intervalId", intervalId);
         window.nodeNames.forEach(node => {
           window.viewer.setNodeTypeEditable(node);
         });
