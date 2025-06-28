@@ -29,13 +29,9 @@ window.addEventListener("message", function (e) {
     }
     window.viewer.requestFrame();
   }else if(e.data && '22D78DEB-39B2-4DB4-A560-5B0C143B02F8' === e.data.type){
-    for (const nodeName of e.data.nodesTohide) {
-      for (const node of window.viewer.findNodesOfType(nodeName)) {
-        node.hide();  
-      }
-    }
+    const material = window.viewer.findMaterial(e.data.material);
     for (const node of window.viewer.findNodesOfType(e.data.node)) {
-      node.show();  
+      window.viewer.setMaterialForMesh(material, node.mesh)
     }
     window.viewer.requestFrame();
   }
