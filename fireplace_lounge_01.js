@@ -6,19 +6,23 @@ function initViewer() {
      viewer.onNodeTypeClicked(function(node){
       console.log("node", node);
     });
-
-    if (window.editableSetupDone) {
-      return;
-    }
-    const intervalId = setInterval(() => {
-      if (window.nodeNames !== undefined) {
-        window.nodeNames.forEach(node => {
-          window.viewer.setNodeTypeEditable(node);
-        });
-        window.nodesMarkedEditable = true;
-        clearInterval(intervalId);
-      }
-    }, 100);
+    
+    window.parent.postMessage(
+      { type: '56C8AB6F-5F86-441A-9E7B-84CF4A81CDC9', payload: {} },
+      "*"
+    );
+    // if (window.editableSetupDone) {
+    //   return;
+    // }
+    // const intervalId = setInterval(() => {
+    //   if (window.nodeNames !== undefined) {
+    //     window.nodeNames.forEach(node => {
+    //       window.viewer.setNodeTypeEditable(node);
+    //     });
+    //     window.nodesMarkedEditable = true;
+    //     clearInterval(intervalId);
+    //   }
+    // }, 100);
   };
 }
 
@@ -30,7 +34,9 @@ window.addEventListener("message", function (e) {
     });
   }else if(e.data && 'B3331D7E-5FEA-4763-959F-BB468F7A2252' === e.data.type){
     console.log("NODES_EDITABLE", e.data)
-    window.nodeNames = e.data.nodes;
+    e.data.nodes.forEach(node => {
+      window.viewer.setNodeTypeEditable(node);
+    });
   } else if(e.data && '0047F251-C4C9-4163-BD66-E78E2096AB0B' === e.data.type){
     this.window.viewer.switchToView(e.data.view);
   }else if(e.data && '980A9415-2888-4596-BDB0-37DE9CA99702' === e.data.type){
