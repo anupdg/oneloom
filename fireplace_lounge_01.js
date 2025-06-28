@@ -28,6 +28,16 @@ window.addEventListener("message", function (e) {
       node.show();  
     }
     window.viewer.requestFrame();
+  }else if(e.data && '22D78DEB-39B2-4DB4-A560-5B0C143B02F8' === e.data.type){
+    for (const nodeName of e.data.nodesTohide) {
+      for (const node of window.viewer.findNodesOfType(nodeName)) {
+        node.hide();  
+      }
+    }
+    for (const node of window.viewer.findNodesOfType(e.data.node)) {
+      node.show();  
+    }
+    window.viewer.requestFrame();
   }
 })
 
