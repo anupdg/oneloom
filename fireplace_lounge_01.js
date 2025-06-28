@@ -3,22 +3,23 @@ function initViewer() {
 
 
   window.viewer.onSceneReadyToDisplay = () => {
+     viewer.onNodeTypeClicked(function(node){
+      console.log("node", node);
+    });
 
+    if (window.editableSetupDone) {
+      return;
+    }
     const intervalId = setInterval(() => {
       if (window.nodeNames !== undefined) {
-        console.log("intervalId", intervalId);
         window.nodeNames.forEach(node => {
           window.viewer.setNodeTypeEditable(node);
         });
-
+        window.nodesMarkedEditable = true;
         clearInterval(intervalId);
       }
     }, 100);
   };
-
-  viewer.onNodeTypeClicked(function(node){
-    console.log("node", node);
-  });
 }
 
 window.addEventListener("message", function (e) {
