@@ -11,18 +11,6 @@ function initViewer() {
       { type: '56C8AB6F-5F86-441A-9E7B-84CF4A81CDC9', payload: {} },
       "*"
     );
-    // if (window.editableSetupDone) {
-    //   return;
-    // }
-    // const intervalId = setInterval(() => {
-    //   if (window.nodeNames !== undefined) {
-    //     window.nodeNames.forEach(node => {
-    //       window.viewer.setNodeTypeEditable(node);
-    //     });
-    //     window.nodesMarkedEditable = true;
-    //     clearInterval(intervalId);
-    //   }
-    // }, 100);
   };
 }
 
