@@ -1,5 +1,3 @@
-
-
 function initViewer() {
   // window.viewer = WALK.getViewer();
 
