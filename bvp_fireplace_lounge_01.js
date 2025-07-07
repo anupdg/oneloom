@@ -3,9 +3,26 @@ function initViewer() {
     const viewer = WALK.getViewer();
     window.viewer = viewer;
 
+    let sofaSelectionApplied = false;
+
     viewer.onNodeTypeClicked(function(node) {
       console.log("node", node);
+      if (!sofaSelectionApplied) {
+        const dropdown = window.parent.document.getElementById("element-selector");
+        if (dropdown) {
+
+          dropdown.value = "SOFA";
+
+          const event = new Event("change", { bubbles: true });
+          dropdown.dispatchEvent(event);
+
+          console.log("SOFA selection applied automatically after first click.");
+        }
+
+        sofaSelectionApplied = true; 
+      }
     });
+    
 
     window.parent.postMessage(
       { type: '56C8AB6F-5F86-441A-9E7B-84CF4A81CDC9', payload: {} },
