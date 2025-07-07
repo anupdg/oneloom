@@ -9,7 +9,7 @@ function initViewer() {
 
 
 
-  viewer.onSceneReadyToDisplay = () => {
+  viewer.addEventListener('sceneReadyToDisplay', () => {
      viewer.onNodeTypeClicked(function(node){
       console.log("node", node);
     });
@@ -18,7 +18,9 @@ function initViewer() {
       { type: '56C8AB6F-5F86-441A-9E7B-84CF4A81CDC9', payload: {} },
       "*"
     );
-  };
+  });
+
+  window._customViewer = viewer;
 }
 
 window.addEventListener("message", function (e) {
