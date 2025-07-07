@@ -9,17 +9,27 @@ function initViewer() {
 
 
 
-  viewer.addEventListener('sceneReadyToDisplay', () => {
-     viewer.onNodeTypeClicked(function(node){
+  const existingHandler = viewer.onSceneReadyToDisplay;
+
+  // Safely combine the default handler + your logic
+  viewer.onSceneReadyToDisplay = () => {
+    // Call the built-in handler to initialize UI
+    if (typeof existingHandler === "function") {
+      existingHandler();
+    }
+
+    // Your custom logic
+    viewer.onNodeTypeClicked(function(node) {
       console.log("node", node);
     });
-    
+
     window.parent.postMessage(
       { type: '56C8AB6F-5F86-441A-9E7B-84CF4A81CDC9', payload: {} },
       "*"
     );
-  });
+  };
 
+  // Store the viewer reference for message handlers
   window._customViewer = viewer;
 }
 
