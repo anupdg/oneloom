@@ -1,27 +1,19 @@
 function initViewer() {
-  const interval = setInterval(() => {
-    if (typeof WALK === "undefined") return;
-
+  // Wait to ensure Shapespark has finished setting up the default menu
+  setTimeout(() => {
     const viewer = WALK.getViewer();
-    if (!viewer) return;
+    window.viewer = viewer;
 
-    // Check if scene is loaded
-    if (viewer.isSceneLoaded()) {
-      clearInterval(interval);
+    // Your logic
+    viewer.onNodeTypeClicked(function(node) {
+      console.log("node", node);
+    });
 
-      window.viewer = viewer;
-
-      // Your logic
-      viewer.onNodeTypeClicked(function(node) {
-        console.log("node", node);
-      });
-
-      window.parent.postMessage(
-        { type: '56C8AB6F-5F86-441A-9E7B-84CF4A81CDC9', payload: {} },
-        "*"
-      );
-    }
-  }, 100);
+    window.parent.postMessage(
+      { type: '56C8AB6F-5F86-441A-9E7B-84CF4A81CDC9', payload: {} },
+      "*"
+    );
+  }, 2000); // 2 seconds delay
 }
 
 document.addEventListener("DOMContentLoaded", function () {
