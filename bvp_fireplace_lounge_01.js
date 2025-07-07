@@ -1,25 +1,27 @@
 function initViewer() {
-  window.viewer = WALK.getViewer();
+  const interval = setInterval(() => {
+    if (typeof WALK === "undefined") return;
 
-  // Keep a reference to any existing handler
-  const originalHandler = window.viewer.onSceneReadyToDisplay;
+    const viewer = WALK.getViewer();
+    if (!viewer) return;
 
-  // Replace with a wrapper that calls both
-  window.viewer.onSceneReadyToDisplay = function() {
-    if (typeof originalHandler === 'function') {
-      originalHandler();
+    // Check if scene is loaded
+    if (viewer.isSceneLoaded()) {
+      clearInterval(interval);
+
+      window.viewer = viewer;
+
+      // Your logic
+      viewer.onNodeTypeClicked(function(node) {
+        console.log("node", node);
+      });
+
+      window.parent.postMessage(
+        { type: '56C8AB6F-5F86-441A-9E7B-84CF4A81CDC9', payload: {} },
+        "*"
+      );
     }
-
-    // Your custom logic
-    window.viewer.onNodeTypeClicked(function(node){
-      console.log("node", node);
-    });
-
-    window.parent.postMessage(
-      { type: '56C8AB6F-5F86-441A-9E7B-84CF4A81CDC9', payload: {} },
-      "*"
-    );
-  };
+  }, 100);
 }
 
 document.addEventListener("DOMContentLoaded", function () {
