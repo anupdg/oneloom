@@ -16,12 +16,24 @@ function initViewer() {
         console.log("Sent message to parent to select SOFA.");
         sofaSelectionApplied = true;
       }
-      else if(node && node.Type){
-        window.parent.postMessage(
-          { type: "SELECT_FROM_SCENE_CLICK", payload: { nodeType: node.Type } },
-          "*"
-        );
-        console.log("Sent message to parent to select node:", node.Type);
+      else {
+        const nodeType = (typeof node.type === "function") ? node.type() : node.type;
+
+        console.log("Sending node type:", nodeType);
+
+        if (nodeType) {
+          window.parent.postMessage(
+            {
+              type: "SELECT_FROM_SCENE_CLICK",
+              payload: {
+                nodeType: nodeType
+              }
+            },
+            "*"
+          );
+        } else {
+          console.warn("Node type was undefined.");
+        }
       }
     });
 
