@@ -8,33 +8,25 @@ function initViewer() {
     viewer.onNodeTypeClicked(function(node) {
       console.log("node", node);
 
-      if (!sofaSelectionApplied) {
+
+      const nodeType = (typeof node.type === "function") ? node.type() : node.type;
+
+      console.log("Sending node type:", nodeType);
+
+      if (nodeType) {
         window.parent.postMessage(
-          { type: "SELECT_SOFA_FROM_SCENE" },
+          {
+            type: "SELECT_FROM_SCENE_CLICK",
+            payload: {
+              nodeType: nodeType
+            }
+          },
           "*"
         );
-        console.log("Sent message to parent to select SOFA.");
-        sofaSelectionApplied = true;
+      } else {
+        console.warn("Node type was undefined.");
       }
-      else {
-        const nodeType = (typeof node.type === "function") ? node.type() : node.type;
 
-        console.log("Sending node type:", nodeType);
-
-        if (nodeType) {
-          window.parent.postMessage(
-            {
-              type: "SELECT_FROM_SCENE_CLICK",
-              payload: {
-                nodeType: nodeType
-              }
-            },
-            "*"
-          );
-        } else {
-          console.warn("Node type was undefined.");
-        }
-      }
     });
 
     window.parent.postMessage(
@@ -46,10 +38,7 @@ function initViewer() {
 
 window.addEventListener("message", function(e) {
   if (e.data && 'FC9B8633-FB7E-4CDB-B9B4-9C7402805EB8' === e.data.type) {
-    console.log("MATERIALS_EDITABLE", e.data);
-    e.data.extensions.forEach(materialName => {
-      window.viewer.setMaterialEditable(materialName);
-    });
+    console.log("Skipping setMaterialEditable to suppress default material picker.");
   } else if (e.data && 'B3331D7E-5FEA-4763-959F-BB468F7A2252' === e.data.type) {
     console.log("NODES_EDITABLE", e.data);
     e.data.nodes.forEach(node => {
