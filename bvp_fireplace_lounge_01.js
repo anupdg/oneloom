@@ -3,8 +3,19 @@ function initViewer() {
     const viewer = WALK.getViewer();
     window.viewer = viewer;
 
+    let sofaSelectionApplied = false;
+
     viewer.onNodeTypeClicked(function(node) {
       console.log("node", node);
+
+      if (!sofaSelectionApplied) {
+        window.parent.postMessage(
+          { type: "SELECT_SOFA_FROM_SCENE" },
+          "*"
+        );
+        console.log("Sent message to parent to select SOFA.");
+        sofaSelectionApplied = true;
+      }
     });
 
     window.parent.postMessage(
