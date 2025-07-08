@@ -3,6 +3,8 @@ function initViewer() {
     const viewer = WALK.getViewer();
     window.viewer = viewer;
 
+    viewer.setMaterialEditable([]);
+    
     let sofaSelectionApplied = false;
 
     viewer.onNodeTypeClicked(function(node) {
