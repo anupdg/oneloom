@@ -16,6 +16,13 @@ function initViewer() {
         console.log("Sent message to parent to select SOFA.");
         sofaSelectionApplied = true;
       }
+      else if(node && node.Type){
+        window.parent.postMessage(
+          { type: "SELECT_FROM_SCENE_CLICK", payload: { nodeType: node.Type } },
+          "*"
+        );
+        console.log("Sent message to parent to select node:", node.Type);
+      }
     });
 
     window.parent.postMessage(
