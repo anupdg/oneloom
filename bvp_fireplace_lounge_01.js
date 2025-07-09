@@ -12,8 +12,6 @@ function initViewer() {
 
 
       const nodeType = (typeof node.type === "function") ? node.type() : node.type;
-      const transform = viewer.getNodeTransform(node);
-      console.log(`NodeType: ${nodeType}, Position: ${transform.position}`);
 
       console.log("Sending node type:", nodeType);
 
