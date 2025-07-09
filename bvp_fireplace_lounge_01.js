@@ -61,21 +61,17 @@ function initViewer() {
     });
 
     // Animate: reposition hotspots each frame
-    viewer.onFrameViewer(() => {
+    viewer.onFrame(() => {
       const camera = viewer.getCamera();
-      hotspots.forEach(hs => {
-        // Convert 3D to 2D screen coordinates
-        const screenPos = camera.worldToScreen(hs.position);
+      const screenPos = camera.worldToScreen([x, y, z]); // 3D position of your hotspot
 
-        if (screenPos) {
-          hs.element.style.display = "block";
-          hs.element.style.left = `${screenPos[0] - 16}px`; // Center icon
-          hs.element.style.top = `${screenPos[1] - 16}px`;
-        } else {
-          // Behind the camera
-          hs.element.style.display = "none";
-        }
-      });
+      if (screenPos) {
+        myElement.style.display = 'block';
+        myElement.style.left = `${screenPos[0]}px`;
+        myElement.style.top = `${screenPos[1]}px`;
+      } else {
+        myElement.style.display = 'none';
+      }
     });
 
 
