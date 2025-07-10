@@ -7,7 +7,7 @@ function initViewer() {
 
     viewer.addAnchor({
       id: "sofa-long-anchor",
-      position: [2.455455424602945, 2.461209885835784, 0.09],
+      position: [3.326692921677223, 1.410632145356301, 0.04647076463319892],
       normal: [0, 1, 0], // Faces upward; change if needed
       label: "SOFA LONG",
       icon: "share",
