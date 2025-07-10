@@ -1,6 +1,7 @@
 function initViewer() {
   setTimeout(() => {
     const viewer = WALK.getViewer();
+    viewer.anchorsVisible = false;
     window.viewer = viewer;
 
     viewer.onNodeTypeClicked(function(node) {
