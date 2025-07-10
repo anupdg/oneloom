@@ -3,28 +3,30 @@ function initViewer() {
 
 
   window.viewer.onSceneReadyToDisplay = () => {
+
+
+    viewer.addAnchor({
+      id: "sofa-long-anchor",
+      position: [2.455455424602945, 2.461209885835784, 0.09],
+      normal: [0, 1, 0], // Faces upward; change if needed
+      label: "SOFA LONG",
+      icon: "share",
+      callback: function () {
+        console.log("Custom anchor clicked: SOFA LONG");
+        window.parent.postMessage(
+          {
+            type: "SELECT_FROM_SCENE_CLICK",
+            payload: {
+              nodeType: "SOFA" // This should match your dropdown option key
+            }
+          },
+          "*"
+        );
+      }
+    });
+    
      viewer.onNodeTypeClicked(function(node){
       console.log("node", node);
-
-      viewer.addAnchor({
-        id: "sofa-long-anchor",
-        position: [2.455455424602945, 2.461209885835784, 0.09],
-        normal: [0, 1, 0], // Faces upward; change if needed
-        label: "SOFA LONG",
-        icon: "share",
-        callback: function () {
-          console.log("Custom anchor clicked: SOFA LONG");
-          window.parent.postMessage(
-            {
-              type: "SELECT_FROM_SCENE_CLICK",
-              payload: {
-                nodeType: "SOFA" // This should match your dropdown option key
-              }
-            },
-            "*"
-          );
-        }
-      });
     });
     
     window.parent.postMessage(
