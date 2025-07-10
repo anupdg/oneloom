@@ -1,36 +1,37 @@
 function initViewer() {
-  setTimeout(() => {
-    const viewer = WALK.getViewer();
-    window.viewer = viewer;
+  window.viewer = WALK.getViewer();
 
-    viewer.onNodeTypeClicked(function(node) {
+
+  window.viewer.onSceneReadyToDisplay = () => {
+     viewer.onNodeTypeClicked(function(node){
       console.log("node", node);
 
-      const nodeType = (typeof node.type === "function") ? node.type() : node.type;
-
-      console.log("Sending node type:", nodeType);
-
-      if (nodeType) {
-        window.parent.postMessage(
-          {
-            type: "SELECT_FROM_SCENE_CLICK",
-            payload: {
-              nodeType: nodeType
-            }
-          },
-          "*"
-        );
-      } else {
-        console.warn("Node type was undefined.");
-      }
-
+      viewer.addAnchor({
+        id: "sofa-long-anchor",
+        position: [2.455455424602945, 2.461209885835784, 0.09],
+        normal: [0, 1, 0], // Faces upward; change if needed
+        label: "SOFA LONG",
+        icon: "share",
+        callback: function () {
+          console.log("Custom anchor clicked: SOFA LONG");
+          window.parent.postMessage(
+            {
+              type: "SELECT_FROM_SCENE_CLICK",
+              payload: {
+                nodeType: "SOFA" // This should match your dropdown option key
+              }
+            },
+            "*"
+          );
+        }
+      });
     });
-
+    
     window.parent.postMessage(
       { type: '56C8AB6F-5F86-441A-9E7B-84CF4A81CDC9', payload: {} },
       "*"
     );
-  }, 2000);
+  };
 }
 
 window.addEventListener("message", function (e) {
@@ -65,6 +66,6 @@ window.addEventListener("message", function (e) {
   }
 })
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   initViewer();
 });
