@@ -3,20 +3,6 @@ function initViewer() {
     const viewer = WALK.getViewer();
     // viewer.anchorsVisible = false;
     window.viewer = viewer;
-    
-    viewer.onSceneReadyToDisplay = () => {
-
-      function anchorClicked() {
-          window.alert('clicked');
-      }
-      var anchorConfig = {
-        position: [1.0, 2.0, 2.5],
-        type: 'sphere',
-        radius: 0.07,
-        text: 'foobar'
-      };
-      var anchor = viewer.addAnchor(anchorConfig, anchorClicked);
-    };
 
     viewer.onNodeTypeClicked(function(node) {
       console.log("node", node);
