@@ -4,6 +4,17 @@ function initViewer() {
     viewer.anchorsVisible = false;
     window.viewer = viewer;
 
+    viewer.onSceneReadyToDisplay = () => {
+      viewer.anchorsVisible = false; // hide all existing anchors
+
+      // ✅ Dynamically add a new material anchor
+      viewer.addAnchor({
+        position: [2.0, 0.5, -2.5], // Replace with a proper [x, y, z] coordinate
+        type: "material",
+        material: "Blue Fabric"     // Replace with a valid material name in your scene
+      });
+    };
+
     viewer.onNodeTypeClicked(function(node) {
       console.log("node", node);
 
