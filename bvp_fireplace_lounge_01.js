@@ -1,18 +1,21 @@
 function initViewer() {
   setTimeout(() => {
     const viewer = WALK.getViewer();
-    viewer.anchorsVisible = false;
+    // viewer.anchorsVisible = false;
     window.viewer = viewer;
-
+    
     viewer.onSceneReadyToDisplay = () => {
-      viewer.anchorsVisible = false; // hide all existing anchors
 
-      // ✅ Dynamically add a new material anchor
-      viewer.addAnchor({
-        position: [2.0, 0.5, -2.5], // Replace with a proper [x, y, z] coordinate
-        type: "material",
-        material: "Blue Fabric"     // Replace with a valid material name in your scene
-      });
+      function anchorClicked() {
+          window.alert('clicked');
+      }
+      var anchorConfig = {
+        position: [1.0, 2.0, 2.5],
+        type: 'sphere',
+        radius: 0.07,
+        text: 'foobar'
+      };
+      var anchor = viewer.addAnchor(anchorConfig, anchorClicked);
     };
 
     viewer.onNodeTypeClicked(function(node) {
