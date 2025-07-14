@@ -1,37 +1,23 @@
 function initViewer() {
-  setTimeout(() => {
-    const viewer = WALK.getViewer();
-    // viewer.anchorsVisible = false;
-    window.viewer = viewer;
+  window.viewer = WALK.getViewer();
 
-    viewer.onNodeTypeClicked(function(node) {
-      console.log("node", node);
-
-      const nodeType = (typeof node.type === "function") ? node.type() : node.type;
-
-      console.log("Sending node type:", nodeType);
-
-      if (nodeType) {
-        window.parent.postMessage(
-          {
-            type: "SELECT_FROM_SCENE_CLICK",
-            payload: {
-              nodeType: nodeType
-            }
-          },
-          "*"
-        );
-      } else {
-        console.warn("Node type was undefined.");
-      }
-
-    });
-
-    window.parent.postMessage(
-      { type: '56C8AB6F-5F86-441A-9E7B-84CF4A81CDC9', payload: {} },
+  function anchorClicked() {
+    window.alert('clicked');
+  }
+  function sceneReadyToDisplay() {
+      var anchorConfig = {
+        position: [2.455455424602945, 2.461209885835784, 0.09],
+        type: 'sphere',
+        radius: 0.07,
+        text: 'foobar'
+      };
+      var anchor = viewer.addAnchor(anchorConfig, anchorClicked);
+      window.parent.postMessage(
+        { type: '56C8AB6F-5F86-441A-9E7B-84CF4A81CDC9', payload: {} },
       "*"
     );
-  }, 2000);
+  }
+  viewer.onSceneReadyToDisplay(sceneReadyToDisplay);
 }
 
 window.addEventListener("message", function (e) {
@@ -66,6 +52,6 @@ window.addEventListener("message", function (e) {
   }
 })
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   initViewer();
 });
