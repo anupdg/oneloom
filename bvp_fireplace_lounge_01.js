@@ -1,5 +1,6 @@
 function initViewer() {
   window.viewer = WALK.getViewer();
+  viewer.anchorsVisible = false;
 
   function anchorClicked() {
     window.alert('clicked');
