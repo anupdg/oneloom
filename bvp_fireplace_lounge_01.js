@@ -11,7 +11,7 @@ function initViewer() {
         position: [1.0, 2.0, 2.5],
         type: 'sphere',
         radius: 0.7,
-        text: 'foobar'
+        icon: 'palette'
       };
       var anchor = viewer.addAnchor(anchorConfig, anchorClicked);
       window.parent.postMessage(
