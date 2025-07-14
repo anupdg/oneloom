@@ -14,6 +14,44 @@ function initViewer() {
         icon: 'palette'
       };
       var anchor = viewer.addAnchor(anchorConfig, anchorClicked);
+
+      const anchors = [
+        {
+          position: [3, 1.5, 0.05],
+          type: 'icon',
+          icon: 'info',  
+          radius: 0.5,
+        },
+        {
+          position: [2.0, 2.0, 2.5],
+          type: 'icon',
+          icon: 'info',
+          radius: 0.5,
+        },
+        {
+          position: [2.5, 2.5, 0.05],
+          type: 'icon',
+          icon: 'info',
+          radius: 0.5,
+        },
+        {
+          position: [2.0, 1.7, 0.05],
+          type: 'icon',
+          icon: 'info',
+          radius: 0.5,
+        },
+        {
+          position: [2.5, 1.0, 2.8],
+          type: 'icon',
+          icon: 'info',
+          radius: 0.5,
+        }
+      ];
+
+      anchors.forEach(anchorConfig => {
+        viewer.addAnchor(anchorConfig, anchorClicked);
+      });
+
       window.parent.postMessage(
         { type: '56C8AB6F-5F86-441A-9E7B-84CF4A81CDC9', payload: {} },
       "*"
