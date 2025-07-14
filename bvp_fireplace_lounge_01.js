@@ -25,8 +25,8 @@ function initViewer() {
 window.addEventListener("message", function (e) {
   if(e.data && 'FC9B8633-FB7E-4CDB-B9B4-9C7402805EB8' === e.data.type){
     console.log("MATERIALS_EDITABLE", e.data)
-    e.data.extensions.forEach(materialName => {
-      window.viewer.setMaterialEditable(materialName);
+    // e.data.extensions.forEach(materialName => {
+    //   window.viewer.setMaterialEditable(materialName);
     });
   }else if(e.data && 'B3331D7E-5FEA-4763-959F-BB468F7A2252' === e.data.type){
     console.log("NODES_EDITABLE", e.data)
