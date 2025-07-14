@@ -18,31 +18,31 @@ function initViewer() {
       const anchors = [
         {
           position: [3, 1.5, 0.05],
-          type: 'icon',
+          type: 'sphere',
           icon: 'info',  
           radius: 0.5,
         },
         {
           position: [2.0, 2.0, 2.5],
-          type: 'icon',
+          type: 'sphere',
           icon: 'info',
           radius: 0.5,
         },
         {
           position: [2.5, 2.5, 0.05],
-          type: 'icon',
+          type: 'sphere',
           icon: 'info',
           radius: 0.5,
         },
         {
           position: [2.0, 1.7, 0.05],
-          type: 'icon',
+          type: 'sphere',
           icon: 'info',
           radius: 0.5,
         },
         {
           position: [2.5, 1.0, 2.8],
-          type: 'icon',
+          type: 'sphere',
           icon: 'info',
           radius: 0.5,
         }
