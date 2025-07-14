@@ -7,9 +7,9 @@ function initViewer() {
   }
   function sceneReadyToDisplay() {
       var anchorConfig = {
-        position: [2.455455424602945, 2.461209885835784, 0.09],
+        position: [1.0, 2.0, 2.5],
         type: 'sphere',
-        radius: 0.07,
+        radius: 2,
         text: 'foobar'
       };
       var anchor = viewer.addAnchor(anchorConfig, anchorClicked);
