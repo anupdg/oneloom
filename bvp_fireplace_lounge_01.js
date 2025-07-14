@@ -1,11 +1,12 @@
 function initViewer() {
   window.viewer = WALK.getViewer();
-  viewer.anchorsVisible = false;
+  // viewer.anchorsVisible = false;
 
   function anchorClicked() {
     window.alert('clicked');
   }
   function sceneReadyToDisplay() {
+      window.viewer.anchorsVisible = false;
       var anchorConfig = {
         position: [1.0, 2.0, 2.5],
         type: 'sphere',
