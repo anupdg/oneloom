@@ -10,7 +10,7 @@ function initViewer() {
       var anchorConfig = {
         position: [1.0, 2.0, 2.5],
         type: 'sphere',
-        radius: 2,
+        radius: 0.7,
         text: 'foobar'
       };
       var anchor = viewer.addAnchor(anchorConfig, anchorClicked);
