@@ -6,19 +6,19 @@ function initViewer() {
   //   window.alert('clicked');
   // }
 
-  function anchorClicked(anchor) {
-    console.log(anchor);
-    const anchorId = anchor.userData?.id;
-    window.parent.postMessage(
-      {
-        type: "ANCHOR_CLICK",
-        payload: {
-          anchorId
-        }
-      },
-      "*"
-    );
-  }
+  // function anchorClicked(anchor) {
+  //   console.log(anchor);
+  //   const anchorId = anchor.userData?.id;
+  //   window.parent.postMessage(
+  //     {
+  //       type: "ANCHOR_CLICK",
+  //       payload: {
+  //         anchorId
+  //       }
+  //     },
+  //     "*"
+  //   );
+  // }
 
 
   function sceneReadyToDisplay() {
@@ -195,6 +195,20 @@ function initViewer() {
       anchors.forEach(anchorConfig => {
         viewer.addAnchor(anchorConfig, anchorClicked);
       });
+
+      function anchorClicked(anchor) {
+        console.log(anchor);
+        const anchorId = anchor.userData?.id;
+        window.parent.postMessage(
+          {
+            type: "ANCHOR_CLICK",
+            payload: {
+              anchorId
+            }
+          },
+          "*"
+        );
+      }
 
       window.parent.postMessage(
         { type: '56C8AB6F-5F86-441A-9E7B-84CF4A81CDC9', payload: {} },
