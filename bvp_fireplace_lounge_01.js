@@ -114,6 +114,7 @@ function initViewer() {
           radius: 0.15,
         },
         {
+          name: "LIVING_WALL",
           userData: {id: "LIVING_WALL"},
           position: [
                     0.9859365044695398,
