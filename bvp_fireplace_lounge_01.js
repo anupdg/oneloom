@@ -6,6 +6,26 @@ function initViewer() {
   //   window.alert('clicked');
   // }
 
+  const anchorIdToAnchor = new Map();
+
+    function anchorClicked(anchor) {
+      const config = anchorIdToAnchor.get(anchor);
+      if (config) {
+        console.log("Anchor clicked:", config.id);
+        window.parent.postMessage(
+          {
+            type: "SELECT_FROM_SCENE_CLICK",
+            payload: {
+              anchorId: config.id
+            }
+          },
+          "*"
+        );
+      } else {
+        console.warn("No config found for clicked anchor", anchor);
+      }
+    }
+  
   // function anchorClicked(anchor) {
   //   console.log(anchor);
   //   const anchorId = anchor.userData?.id;
@@ -23,7 +43,7 @@ function initViewer() {
 
   function sceneReadyToDisplay() {
       window.viewer.anchorsVisible = false;
-
+      
       // const anchors = [
       //   {
       //     position: [3, 1.5, 0.05],
@@ -193,22 +213,10 @@ function initViewer() {
         },
       ];
       anchors.forEach(anchorConfig => {
-        viewer.addAnchor(anchorConfig, anchorClicked);
+        // viewer.addAnchor(anchorConfig, anchorClicked);
+        const anchorObject = viewer.addAnchor(anchorConfig, anchorClicked);
+        anchorIdToAnchor.set(anchorObject, anchorConfig);
       });
-
-      function anchorClicked(anchor) {
-        console.log(anchor);
-        const anchorId = anchor.userData?.id;
-        window.parent.postMessage(
-          {
-            type: "ANCHOR_CLICK",
-            payload: {
-              anchorId
-            }
-          },
-          "*"
-        );
-      }
 
       window.parent.postMessage(
         { type: '56C8AB6F-5F86-441A-9E7B-84CF4A81CDC9', payload: {} },
