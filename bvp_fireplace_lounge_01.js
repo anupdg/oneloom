@@ -2,9 +2,23 @@ function initViewer() {
   window.viewer = WALK.getViewer();
   // viewer.anchorsVisible = false;
 
-  function anchorClicked() {
-    window.alert('clicked');
+  // function anchorClicked() {
+  //   window.alert('clicked');
+  // }
+
+  function anchorClicked(anchor) {
+    window.parent.postMessage(
+      {
+        type: "ANCHOR_CLICK",
+        payload: {
+          anchorId: anchor.id
+        }
+      },
+      "*"
+    );
   }
+
+
   function sceneReadyToDisplay() {
       window.viewer.anchorsVisible = false;
 
