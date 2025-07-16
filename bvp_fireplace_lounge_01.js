@@ -11,7 +11,8 @@ function initViewer() {
           {
             type: "ANCHOR_CLICK",
             payload: {
-              anchorId: config.name
+              anchorId: config.name,
+              tabType: config.tabType
             }
           },
           "*"
@@ -34,8 +35,9 @@ function initViewer() {
                     0.09
                 ],
           type: 'sphere',
-          icon: 'info',  
+          icon: 'question',  
           radius: 0.15,
+          tabType: "Mesh" // or "Material"
         },
         {
           name: "ARM_CHAIRS",
@@ -45,8 +47,9 @@ function initViewer() {
                     0.053848478839140894
                 ],
           type: 'sphere',
-          icon: 'info',  
+          icon: 'question',  
           radius: 0.15,
+          tabType: "Mesh" // or "Material"
         },
         {
           name: "FLOOR",
@@ -58,6 +61,7 @@ function initViewer() {
           type: 'sphere',
           icon: 'info',  
           radius: 0.15,
+          tabType: "Mesh" // or "Material"
         },
         {
           name: "DINING_CARPET",
@@ -69,6 +73,7 @@ function initViewer() {
           type: 'sphere',
           icon: 'info',  
           radius: 0.15,
+          tabType: "Mesh" // or "Material"
         },
         {
           name: "DINING_WALL",
@@ -80,6 +85,7 @@ function initViewer() {
           type: 'sphere',
           icon: 'info',  
           radius: 0.15,
+          tabType: "Mesh" // or "Material"
         },
         {
           name: "LIVING_WALL",
@@ -89,8 +95,9 @@ function initViewer() {
                     1.571453019965263
                 ],
           type: 'sphere',
-          icon: 'question',
+          icon: 'info',
           radius: 0.15,
+          tabType: "Mesh" // or "Material"
         },
         {
           name: "LONG_SOFA_MAT",
@@ -100,8 +107,9 @@ function initViewer() {
                     0.04098008049063872
                 ],
           type: 'sphere',
-          icon: 'question',
+          icon: 'info',
           radius: 0.15,
+          tabType: "Material"
         },
         {
           name: "LIVING_CARPET",
@@ -113,6 +121,7 @@ function initViewer() {
           type: 'sphere',
           icon: 'info',
           radius: 0.15,
+          tabType: "Material"
         },
         {
           name: "DINING_FLOOR",
@@ -124,6 +133,7 @@ function initViewer() {
           type: 'sphere',
           icon: 'info',
           radius: 0.15,
+          tabType: "Material"
         },
         {
           name: "BEDROOM_CARPET",
@@ -135,6 +145,7 @@ function initViewer() {
           type: 'sphere',
           icon: 'info',
           radius: 0.15,
+          tabType: "Material"
         },
         {
           name: "BEDROOM_FLOOR",
@@ -146,6 +157,7 @@ function initViewer() {
           type: 'sphere',
           icon: 'info',
           radius: 0.15,
+          tabType: "Material"
         },
         {
           name: "BEDROOM_WALL",
@@ -157,6 +169,7 @@ function initViewer() {
           type: 'sphere',
           icon: 'info',
           radius: 0.15,
+          tabType: "Material"
         },
       ];
       anchors.forEach(anchorConfig => {
