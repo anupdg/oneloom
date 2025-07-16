@@ -54,28 +54,37 @@ function initViewer() {
           radius: 0.09,
         },
         {
-          position: [2.0, 2.0, 2.5],
+          id: "LIVING_WALL",
+          position: [
+                    0.9859365044695398,
+                    3.7932437701105357,
+                    1.571453019965263
+                ],
           type: 'sphere',
           icon: 'question',
-          radius: 0.05,
+          radius: 0.09,
         },
         {
-          position: [2.5, 2.5, 0.05],
+          id: "LONG_SOFA_MAT",
+          position: [
+                    2.673152774936188,
+                    2.4944383025154413,
+                    0.04098008049063872
+                ],
           type: 'sphere',
-          icon: 'image',
-          radius: 0.05,
+          icon: 'question',
+          radius: 0.09,
         },
         {
-          position: [2.0, 1.7, 0.05],
+          id:"LIVING_CARPET",
+          position: [
+                    2.060774875400001,
+                    1.6782010356026829,
+                    0.04555584985714865
+                ],
           type: 'sphere',
-          icon: 'warning',
-          radius: 0.05,
-        },
-        {
-          position: [2.5, 1.0, 2.8],
-          type: 'sphere',
-          icon: 'shopping',
-          radius: 0.05,
+          icon: 'info',
+          radius: 0.09,
         }
       ];
       anchors.forEach(anchorConfig => {
