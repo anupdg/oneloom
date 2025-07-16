@@ -7,6 +7,7 @@ function initViewer() {
   // }
 
   function anchorClicked(anchor) {
+    console.log(anchor);
     window.parent.postMessage(
       {
         type: "ANCHOR_CLICK",
