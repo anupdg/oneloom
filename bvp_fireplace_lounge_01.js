@@ -7,13 +7,6 @@ function initViewer() {
   }
   function sceneReadyToDisplay() {
       window.viewer.anchorsVisible = false;
-      var anchorConfig = {
-        position: [1.0, 2.0, 2.5],
-        type: 'sphere',
-        radius: 0.7,
-        icon: 'palette'
-      };
-      var anchor = viewer.addAnchor(anchorConfig, anchorClicked);
 
       const anchors = [
         {
@@ -25,25 +18,25 @@ function initViewer() {
         {
           position: [2.0, 2.0, 2.5],
           type: 'sphere',
-          icon: 'info',
+          icon: 'question',
           radius: 0.05,
         },
         {
           position: [2.5, 2.5, 0.05],
           type: 'sphere',
-          icon: 'info',
+          icon: 'image',
           radius: 0.05,
         },
         {
           position: [2.0, 1.7, 0.05],
           type: 'sphere',
-          icon: 'info',
+          icon: 'warning',
           radius: 0.05,
         },
         {
           position: [2.5, 1.0, 2.8],
           type: 'sphere',
-          icon: 'info',
+          icon: 'shopping',
           radius: 0.05,
         }
       ];
