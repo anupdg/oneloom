@@ -8,12 +8,50 @@ function initViewer() {
   function sceneReadyToDisplay() {
       window.viewer.anchorsVisible = false;
 
-      const anchors = [
+      // const anchors = [
+      //   {
+      //     position: [3, 1.5, 0.05],
+      //     type: 'sphere',
+      //     icon: 'info',  
+      //     radius: 0.05,
+      //   },
+      //   {
+      //     position: [2.0, 2.0, 2.5],
+      //     type: 'sphere',
+      //     icon: 'question',
+      //     radius: 0.05,
+      //   },
+      //   {
+      //     position: [2.5, 2.5, 0.05],
+      //     type: 'sphere',
+      //     icon: 'image',
+      //     radius: 0.05,
+      //   },
+      //   {
+      //     position: [2.0, 1.7, 0.05],
+      //     type: 'sphere',
+      //     icon: 'warning',
+      //     radius: 0.05,
+      //   },
+      //   {
+      //     position: [2.5, 1.0, 2.8],
+      //     type: 'sphere',
+      //     icon: 'shopping',
+      //     radius: 0.05,
+      //   }
+      // ];
+
+        const anchors = [
         {
-          position: [3, 1.5, 0.05],
+          id: "SOFA",
+          position: [
+                    2.455455424602945,
+                    2.461209885835784,
+                    0.09
+                ],
           type: 'sphere',
           icon: 'info',  
-          radius: 0.05,
+          radius: 0.09,
         },
         {
           position: [2.0, 2.0, 2.5],
@@ -40,7 +78,6 @@ function initViewer() {
           radius: 0.05,
         }
       ];
-
       anchors.forEach(anchorConfig => {
         viewer.addAnchor(anchorConfig, anchorClicked);
       });
