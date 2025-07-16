@@ -1,10 +1,5 @@
 function initViewer() {
   window.viewer = WALK.getViewer();
-  // viewer.anchorsVisible = false;
-
-  // function anchorClicked() {
-  //   window.alert('clicked');
-  // }
 
   const anchorIdToAnchor = new Map();
 
@@ -14,7 +9,7 @@ function initViewer() {
         console.log("Anchor clicked:", config.id);
         window.parent.postMessage(
           {
-            type: "SELECT_FROM_SCENE_CLICK",
+            type: "ANCHOR_CLICK",
             payload: {
               anchorId: config.id
             }
@@ -25,60 +20,14 @@ function initViewer() {
         console.warn("No config found for clicked anchor", anchor);
       }
     }
-  
-  // function anchorClicked(anchor) {
-  //   console.log(anchor);
-  //   const anchorId = anchor.userData?.id;
-  //   window.parent.postMessage(
-  //     {
-  //       type: "ANCHOR_CLICK",
-  //       payload: {
-  //         anchorId
-  //       }
-  //     },
-  //     "*"
-  //   );
-  // }
 
 
   function sceneReadyToDisplay() {
       window.viewer.anchorsVisible = false;
-      
-      // const anchors = [
-      //   {
-      //     position: [3, 1.5, 0.05],
-      //     type: 'sphere',
-      //     icon: 'info',  
-      //     radius: 0.05,
-      //   },
-      //   {
-      //     position: [2.0, 2.0, 2.5],
-      //     type: 'sphere',
-      //     icon: 'question',
-      //     radius: 0.05,
-      //   },
-      //   {
-      //     position: [2.5, 2.5, 0.05],
-      //     type: 'sphere',
-      //     icon: 'image',
-      //     radius: 0.05,
-      //   },
-      //   {
-      //     position: [2.0, 1.7, 0.05],
-      //     type: 'sphere',
-      //     icon: 'warning',
-      //     radius: 0.05,
-      //   },
-      //   {
-      //     position: [2.5, 1.0, 2.8],
-      //     type: 'sphere',
-      //     icon: 'shopping',
-      //     radius: 0.05,
-      //   }
-      // ];
 
         const anchors = [
         {
+          name: "SOFA_LONG",
           userData : {id: "SOFA_LONG"},
           position: [
                     2.455455424602945,
@@ -90,6 +39,7 @@ function initViewer() {
           radius: 0.15,
         },
         {
+          name: "ARM_CHAIRS",
           userData: {id: "ARM_CHAIRS"},
           position: [
                     2.4146124949487735,
@@ -101,6 +51,7 @@ function initViewer() {
           radius: 0.15,
         },
         {
+          name: "FLOOR",
           userData: {id: "FLOOR"},
           position: [
                     3.326692921677223,
@@ -112,6 +63,7 @@ function initViewer() {
           radius: 0.15,
         },
         {
+          name: "DINING_CARPET",
           userData: {id: "DINING_CARPET"},
           position: [
                     -3.877094249470993,
@@ -123,6 +75,7 @@ function initViewer() {
           radius: 0.15,
         },
         {
+          name: "DINING_WALL",
           userData: {id: "DINING_WALL"},
           position: [
                     -6.595282729676232,
@@ -146,6 +99,7 @@ function initViewer() {
           radius: 0.15,
         },
         {
+          name: "LONG_SOFA_MAT",
           userData: {id: "LONG_SOFA_MAT"},
           position: [
                     2.673152774936188,
@@ -157,6 +111,7 @@ function initViewer() {
           radius: 0.15,
         },
         {
+          name: "LIVING_CARPET",
           userData: {id:"LIVING_CARPET"},
           position: [
                     2.060774875400001,
@@ -168,6 +123,7 @@ function initViewer() {
           radius: 0.15,
         },
         {
+          name: "DINING_FLOOR",
           userData: {id:"DINING_FLOOR"},
           position: [
                     -2.9217184117301214,
@@ -179,6 +135,7 @@ function initViewer() {
           radius: 0.15,
         },
         {
+          name: "BEDROOM_CARPET",
           userData: {id:"BEDROOM_CARPET"},
           position: [
                     -4.242119991482763,
@@ -190,6 +147,7 @@ function initViewer() {
           radius: 0.15,
         },
         {
+          name: "BEDROOM_FLOOR",
           userData: {id:"BEDROOM_FLOOR"},
           position: [
                     -6.090789058661746,
@@ -200,7 +158,8 @@ function initViewer() {
           icon: 'info',
           radius: 0.15,
         },
-                {
+        {
+          name: "BEDROOM_WALL",
           userData: {id:"BEDROOM_WALL"},
           position:[
                     -6.603469518041618,
