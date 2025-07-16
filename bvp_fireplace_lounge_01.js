@@ -6,12 +6,12 @@ function initViewer() {
     function anchorClicked(anchor) {
       const config = anchorIdToAnchor.get(anchor);
       if (config) {
-        console.log("Anchor clicked:", config.id);
+        console.log("Anchor clicked:", config.name);
         window.parent.postMessage(
           {
             type: "ANCHOR_CLICK",
             payload: {
-              anchorId: config.id
+              anchorId: config.name
             }
           },
           "*"
