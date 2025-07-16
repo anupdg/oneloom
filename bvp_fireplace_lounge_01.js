@@ -43,11 +43,55 @@ function initViewer() {
 
         const anchors = [
         {
-          id: "SOFA",
+          id: "SOFA_LONG",
           position: [
                     2.455455424602945,
                     2.461209885835784,
                     0.09
+                ],
+          type: 'sphere',
+          icon: 'info',  
+          radius: 0.09,
+        },
+        {
+          id: "ARM_CHAIRS",
+          position: [
+                    2.4146124949487735,
+                    0.43170449376177983,
+                    0.053848478839140894
+                ],
+          type: 'sphere',
+          icon: 'info',  
+          radius: 0.09,
+        },
+        {
+          id: "FLOOR",
+          position: [
+                    3.326692921677223,
+                    1.410632145356301,
+                    0.04647076463319892
+                ],
+          type: 'sphere',
+          icon: 'info',  
+          radius: 0.09,
+        },
+                {
+          id: "DINING_CARPET",
+          position: [
+                    -3.877094249470993,
+                    -1.2222199698167233,
+                    0.08
+                ],
+          type: 'sphere',
+          icon: 'info',  
+          radius: 0.09,
+        },
+        {
+          id: "DINING_WALL",
+          position: [
+                    -6.595282729676232,
+                    -0.5821483559815583,
+                    1.9847833473345315
                 ],
           type: 'sphere',
           icon: 'info',  
@@ -85,7 +129,51 @@ function initViewer() {
           type: 'sphere',
           icon: 'info',
           radius: 0.09,
-        }
+        },
+                {
+          id:"DINING_FLOOR",
+          position: [
+                    -2.9217184117301214,
+                    1.2104482636169263,
+                    0.11
+                ],
+          type: 'sphere',
+          icon: 'info',
+          radius: 0.09,
+        },
+        {
+          id:"BEDROOM_CARPET",
+          position: [
+                    -4.242119991482763,
+                    -3.362161518445343,
+                    0.06730263768225293
+                ],
+          type: 'sphere',
+          icon: 'info',
+          radius: 0.09,
+        },
+        {
+          id:"BEDROOM_FLOOR",
+          position: [
+                    -6.090789058661746,
+                    -4.05315297660159,
+                    0.09
+                ],
+          type: 'sphere',
+          icon: 'info',
+          radius: 0.09,
+        },
+                {
+          id:"BEDROOM_WALL",
+          position:[
+                    -6.603469518041618,
+                    -4.404376424420667,
+                    0.932759642122266
+                ],
+          type: 'sphere',
+          icon: 'info',
+          radius: 0.09,
+        },
       ];
       anchors.forEach(anchorConfig => {
         viewer.addAnchor(anchorConfig, anchorClicked);
