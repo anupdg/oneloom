@@ -61,7 +61,7 @@ function initViewer() {
           type: 'sphere',
           icon: 'info',  
           radius: 0.15,
-          tabType: "Mesh" // or "Material"
+          tabType: "Material"
         },
         {
           name: "DINING_CARPET",
@@ -73,7 +73,7 @@ function initViewer() {
           type: 'sphere',
           icon: 'info',  
           radius: 0.15,
-          tabType: "Mesh" // or "Material"
+          tabType: "Material"
         },
         {
           name: "DINING_WALL",
@@ -85,7 +85,7 @@ function initViewer() {
           type: 'sphere',
           icon: 'info',  
           radius: 0.15,
-          tabType: "Mesh" // or "Material"
+          tabType:"Material"
         },
         {
           name: "LIVING_WALL",
@@ -97,7 +97,7 @@ function initViewer() {
           type: 'sphere',
           icon: 'info',
           radius: 0.15,
-          tabType: "Mesh" // or "Material"
+          tabType: "Material"
         },
         {
           name: "LONG_SOFA_MAT",
