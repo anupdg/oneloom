@@ -51,7 +51,7 @@ function initViewer() {
                 ],
           type: 'sphere',
           icon: 'info',  
-          radius: 0.09,
+          radius: 0.15,
         },
         {
           id: "ARM_CHAIRS",
@@ -62,7 +62,7 @@ function initViewer() {
                 ],
           type: 'sphere',
           icon: 'info',  
-          radius: 0.09,
+          radius: 0.15,
         },
         {
           id: "FLOOR",
@@ -73,7 +73,7 @@ function initViewer() {
                 ],
           type: 'sphere',
           icon: 'info',  
-          radius: 0.09,
+          radius: 0.15,
         },
                 {
           id: "DINING_CARPET",
@@ -84,7 +84,7 @@ function initViewer() {
                 ],
           type: 'sphere',
           icon: 'info',  
-          radius: 0.09,
+          radius: 0.15,
         },
         {
           id: "DINING_WALL",
@@ -95,7 +95,7 @@ function initViewer() {
                 ],
           type: 'sphere',
           icon: 'info',  
-          radius: 0.09,
+          radius: 0.15,
         },
         {
           id: "LIVING_WALL",
@@ -106,7 +106,7 @@ function initViewer() {
                 ],
           type: 'sphere',
           icon: 'question',
-          radius: 0.09,
+          radius: 0.15,
         },
         {
           id: "LONG_SOFA_MAT",
@@ -117,7 +117,7 @@ function initViewer() {
                 ],
           type: 'sphere',
           icon: 'question',
-          radius: 0.09,
+          radius: 0.15,
         },
         {
           id:"LIVING_CARPET",
@@ -128,7 +128,7 @@ function initViewer() {
                 ],
           type: 'sphere',
           icon: 'info',
-          radius: 0.09,
+          radius: 0.15,
         },
                 {
           id:"DINING_FLOOR",
@@ -139,7 +139,7 @@ function initViewer() {
                 ],
           type: 'sphere',
           icon: 'info',
-          radius: 0.09,
+          radius: 0.15,
         },
         {
           id:"BEDROOM_CARPET",
@@ -150,7 +150,7 @@ function initViewer() {
                 ],
           type: 'sphere',
           icon: 'info',
-          radius: 0.09,
+          radius: 0.15,
         },
         {
           id:"BEDROOM_FLOOR",
@@ -161,7 +161,7 @@ function initViewer() {
                 ],
           type: 'sphere',
           icon: 'info',
-          radius: 0.09,
+          radius: 0.15,
         },
                 {
           id:"BEDROOM_WALL",
@@ -172,7 +172,7 @@ function initViewer() {
                 ],
           type: 'sphere',
           icon: 'info',
-          radius: 0.09,
+          radius: 0.15,
         },
       ];
       anchors.forEach(anchorConfig => {
