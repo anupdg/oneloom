@@ -211,7 +211,7 @@ window.addEventListener("message", function (e) {
   }else if(e.data && 'B3331D7E-5FEA-4763-959F-BB468F7A2252' === e.data.type){
     console.log("NODES_EDITABLE", e.data)
     const checkSceneReadyInterval = setInterval(() => {
-      if (window.isSceneReady) {
+      if (window.sceneReady) {
         // Scene is ready, execute the loop
         e.data.nodes.forEach(node => {
           window.viewer.setNodeTypeEditable(node);
