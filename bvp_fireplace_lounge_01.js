@@ -13,181 +13,181 @@ function initViewer() {
   //   );
   // };
 
-    const anchorIdToAnchor = new Map();
+  //   const anchorIdToAnchor = new Map();
 
-  function anchorClicked(anchor) {
-    const config = anchorIdToAnchor.get(anchor);
-    if (config) {
-      console.log("Anchor clicked:", config.name);
-      window.parent.postMessage(
-        {
-          type: "ANCHOR_CLICK",
-          payload: {
-            anchorId: config.name,
-            tabType: config.tabType
-          }
-        },
-        "*"
-      );
-    } else {
-      console.warn("No config found for clicked anchor", anchor);
-    }
-  }
+  // function anchorClicked(anchor) {
+  //   const config = anchorIdToAnchor.get(anchor);
+  //   if (config) {
+  //     console.log("Anchor clicked:", config.name);
+  //     window.parent.postMessage(
+  //       {
+  //         type: "ANCHOR_CLICK",
+  //         payload: {
+  //           anchorId: config.name,
+  //           tabType: config.tabType
+  //         }
+  //       },
+  //       "*"
+  //     );
+  //   } else {
+  //     console.warn("No config found for clicked anchor", anchor);
+  //   }
+  // }
 
   function sceneReadyToDisplay() {
       // window.viewer.anchorsVisible = false;
 
-        const anchors = [
-        {
-          name: "SOFA_LONG",
-          position: [
-                    2.455455424602945,
-                    2.461209885835784,
-                    0.09
-                ],
-          type: 'sphere',
-          icon: 'question',  
-          radius: 0.15,
-          tabType: "Mesh" // or "Material"
-        },
-        {
-          name: "ARM_CHAIRS",
-          position: [
-                    2.4146124949487735,
-                    0.43170449376177983,
-                    0.053848478839140894
-                ],
-          type: 'sphere',
-          icon: 'question',  
-          radius: 0.15,
-          tabType: "Mesh" // or "Material"
-        },
-        {
-          name: "FLOOR",
-          position: [
-                    3.326692921677223,
-                    1.410632145356301,
-                    0.04647076463319892
-                ],
-          type: 'sphere',
-          icon: 'info',  
-          radius: 0.15,
-          tabType: "Material"
-        },
-        {
-          name: "DINING_CARPET",
-          position: [
-                    -3.877094249470993,
-                    -1.2222199698167233,
-                    0.08
-                ],
-          type: 'sphere',
-          icon: 'info',  
-          radius: 0.15,
-          tabType: "Material"
-        },
-        {
-          name: "DINING_WALL",
-          position: [
-                    -6.595282729676232,
-                    -0.5821483559815583,
-                    1.9847833473345315
-                ],
-          type: 'sphere',
-          icon: 'info',  
-          radius: 0.15,
-          tabType:"Material"
-        },
-        {
-          name: "LIVING_WALL",
-          position: [
-                    0.9859365044695398,
-                    3.7932437701105357,
-                    1.571453019965263
-                ],
-          type: 'sphere',
-          icon: 'info',
-          radius: 0.15,
-          tabType: "Material"
-        },
-        {
-          name: "LONG_SOFA_MAT",
-          position: [
-                    2.673152774936188,
-                    2.4944383025154413,
-                    0.04098008049063872
-                ],
-          type: 'sphere',
-          icon: 'info',
-          radius: 0.15,
-          tabType: "Material"
-        },
-        {
-          name: "LIVING_CARPET",
-          position: [
-                    2.060774875400001,
-                    1.6782010356026829,
-                    0.04555584985714865
-                ],
-          type: 'sphere',
-          icon: 'info',
-          radius: 0.15,
-          tabType: "Material"
-        },
-        {
-          name: "DINING_FLOOR",
-          position: [
-                    -2.9217184117301214,
-                    1.2104482636169263,
-                    0.11
-                ],
-          type: 'sphere',
-          icon: 'info',
-          radius: 0.15,
-          tabType: "Material"
-        },
-        {
-          name: "BEDROOM_CARPET",
-          position: [
-                    -4.242119991482763,
-                    -3.362161518445343,
-                    0.06730263768225293
-                ],
-          type: 'sphere',
-          icon: 'info',
-          radius: 0.15,
-          tabType: "Material"
-        },
-        {
-          name: "BEDROOM_FLOOR",
-          position: [
-                    -6.090789058661746,
-                    -4.05315297660159,
-                    0.09
-                ],
-          type: 'sphere',
-          icon: 'info',
-          radius: 0.15,
-          tabType: "Material"
-        },
-        {
-          name: "BEDROOM_WALL",
-          position:[
-                    -6.603469518041618,
-                    -4.404376424420667,
-                    0.932759642122266
-                ],
-          type: 'sphere',
-          icon: 'info',
-          radius: 0.15,
-          tabType: "Material"
-        },
-      ];
-      anchors.forEach(anchorConfig => {
-        // viewer.addAnchor(anchorConfig, anchorClicked);
-        const anchorObject = viewer.addAnchor(anchorConfig, anchorClicked);
-        anchorIdToAnchor.set(anchorObject, anchorConfig);
-      });
+      //   const anchors = [
+      //   {
+      //     name: "SOFA_LONG",
+      //     position: [
+      //               2.455455424602945,
+      //               2.461209885835784,
+      //               0.09
+      //           ],
+      //     type: 'sphere',
+      //     icon: 'question',  
+      //     radius: 0.15,
+      //     tabType: "Mesh" // or "Material"
+      //   },
+      //   {
+      //     name: "ARM_CHAIRS",
+      //     position: [
+      //               2.4146124949487735,
+      //               0.43170449376177983,
+      //               0.053848478839140894
+      //           ],
+      //     type: 'sphere',
+      //     icon: 'question',  
+      //     radius: 0.15,
+      //     tabType: "Mesh" // or "Material"
+      //   },
+      //   {
+      //     name: "FLOOR",
+      //     position: [
+      //               3.326692921677223,
+      //               1.410632145356301,
+      //               0.04647076463319892
+      //           ],
+      //     type: 'sphere',
+      //     icon: 'info',  
+      //     radius: 0.15,
+      //     tabType: "Material"
+      //   },
+      //   {
+      //     name: "DINING_CARPET",
+      //     position: [
+      //               -3.877094249470993,
+      //               -1.2222199698167233,
+      //               0.08
+      //           ],
+      //     type: 'sphere',
+      //     icon: 'info',  
+      //     radius: 0.15,
+      //     tabType: "Material"
+      //   },
+      //   {
+      //     name: "DINING_WALL",
+      //     position: [
+      //               -6.595282729676232,
+      //               -0.5821483559815583,
+      //               1.9847833473345315
+      //           ],
+      //     type: 'sphere',
+      //     icon: 'info',  
+      //     radius: 0.15,
+      //     tabType:"Material"
+      //   },
+      //   {
+      //     name: "LIVING_WALL",
+      //     position: [
+      //               0.9859365044695398,
+      //               3.7932437701105357,
+      //               1.571453019965263
+      //           ],
+      //     type: 'sphere',
+      //     icon: 'info',
+      //     radius: 0.15,
+      //     tabType: "Material"
+      //   },
+      //   {
+      //     name: "LONG_SOFA_MAT",
+      //     position: [
+      //               2.673152774936188,
+      //               2.4944383025154413,
+      //               0.04098008049063872
+      //           ],
+      //     type: 'sphere',
+      //     icon: 'info',
+      //     radius: 0.15,
+      //     tabType: "Material"
+      //   },
+      //   {
+      //     name: "LIVING_CARPET",
+      //     position: [
+      //               2.060774875400001,
+      //               1.6782010356026829,
+      //               0.04555584985714865
+      //           ],
+      //     type: 'sphere',
+      //     icon: 'info',
+      //     radius: 0.15,
+      //     tabType: "Material"
+      //   },
+      //   {
+      //     name: "DINING_FLOOR",
+      //     position: [
+      //               -2.9217184117301214,
+      //               1.2104482636169263,
+      //               0.11
+      //           ],
+      //     type: 'sphere',
+      //     icon: 'info',
+      //     radius: 0.15,
+      //     tabType: "Material"
+      //   },
+      //   {
+      //     name: "BEDROOM_CARPET",
+      //     position: [
+      //               -4.242119991482763,
+      //               -3.362161518445343,
+      //               0.06730263768225293
+      //           ],
+      //     type: 'sphere',
+      //     icon: 'info',
+      //     radius: 0.15,
+      //     tabType: "Material"
+      //   },
+      //   {
+      //     name: "BEDROOM_FLOOR",
+      //     position: [
+      //               -6.090789058661746,
+      //               -4.05315297660159,
+      //               0.09
+      //           ],
+      //     type: 'sphere',
+      //     icon: 'info',
+      //     radius: 0.15,
+      //     tabType: "Material"
+      //   },
+      //   {
+      //     name: "BEDROOM_WALL",
+      //     position:[
+      //               -6.603469518041618,
+      //               -4.404376424420667,
+      //               0.932759642122266
+      //           ],
+      //     type: 'sphere',
+      //     icon: 'info',
+      //     radius: 0.15,
+      //     tabType: "Material"
+      //   },
+      // ];
+      // anchors.forEach(anchorConfig => {
+      //   // viewer.addAnchor(anchorConfig, anchorClicked);
+      //   const anchorObject = viewer.addAnchor(anchorConfig, anchorClicked);
+      //   anchorIdToAnchor.set(anchorObject, anchorConfig);
+      // });
 
       viewer.onNodeTypeClicked(function(node){
         console.log("node", node);
