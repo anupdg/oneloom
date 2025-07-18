@@ -13,6 +13,27 @@ function initViewer() {
   //   );
   // };
 
+    const anchorIdToAnchor = new Map();
+
+  function anchorClicked(anchor) {
+    const config = anchorIdToAnchor.get(anchor);
+    if (config) {
+      console.log("Anchor clicked:", config.name);
+      window.parent.postMessage(
+        {
+          type: "ANCHOR_CLICK",
+          payload: {
+            anchorId: config.name,
+            tabType: config.tabType
+          }
+        },
+        "*"
+      );
+    } else {
+      console.warn("No config found for clicked anchor", anchor);
+    }
+  }
+
   function sceneReadyToDisplay() {
       // window.viewer.anchorsVisible = false;
 
