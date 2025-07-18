@@ -36,6 +36,7 @@ function initViewer() {
 
   function sceneReadyToDisplay() {
       // window.viewer.anchorsVisible = false;
+      window.sceneReady = true;
 
       //   const anchors = [
       //   {
@@ -193,10 +194,10 @@ function initViewer() {
         console.log("node", node);
       });
 
-      window.parent.postMessage(
-        { type: '56C8AB6F-5F86-441A-9E7B-84CF4A81CDC9', payload: {} },
-        "*"
-      );
+      // window.parent.postMessage(
+      //   { type: '56C8AB6F-5F86-441A-9E7B-84CF4A81CDC9', payload: {} },
+      //   "*"
+      // );
   }
   window.viewer.onSceneReadyToDisplay(sceneReadyToDisplay);
 }
@@ -209,9 +210,17 @@ window.addEventListener("message", function (e) {
     });
   }else if(e.data && 'B3331D7E-5FEA-4763-959F-BB468F7A2252' === e.data.type){
     console.log("NODES_EDITABLE", e.data)
-    e.data.nodes.forEach(node => {
-      window.viewer.setNodeTypeEditable(node);
-    });
+    const checkSceneReadyInterval = setInterval(() => {
+      if (window.isSceneReady) {
+        // Scene is ready, execute the loop
+        e.data.nodes.forEach(node => {
+          window.viewer.setNodeTypeEditable(node);
+        });
+  
+        // Clear the interval to stop further checks
+        clearInterval(checkSceneReadyInterval);
+      }
+    }, 500);
   } else if(e.data && '0047F251-C4C9-4163-BD66-E78E2096AB0B' === e.data.type){
     this.window.viewer.switchToView(e.data.view);
   }else if(e.data && '980A9415-2888-4596-BDB0-37DE9CA99702' === e.data.type){
