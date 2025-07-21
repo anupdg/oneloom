@@ -2,7 +2,7 @@
 function initViewer() {
   window.viewer = WALK.getViewer();
 
-  window.parent.postMessage({ type: 'READY_FOR_EDITABLE' }, '*');
+  window.parent.postMessage({ type: '11AC52C9-D395-4B50-A0BE-B8F993218F8A' }, '*');
 
   const anchorIdToAnchor = new Map();
 
