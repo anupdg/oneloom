@@ -223,7 +223,9 @@ window.addEventListener("message", function (e) {
   }else if(e.data && '22D78DEB-39B2-4DB4-A560-5B0C143B02F8' === e.data.type){
     const material = window.viewer.findMaterial(e.data.material);
     for (const node of window.viewer.findNodesOfType(e.data.node)) {
-      window.viewer.setMaterialForMesh(material, node.mesh)
+      console.log('BEFORE:', node.mesh.material.name);
+      window.viewer.setMaterialForMesh(material, node.mesh);
+      console.log('AFTER:', node.mesh.material.name);
     }
     window.viewer.requestFrame();
   }
