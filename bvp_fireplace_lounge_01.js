@@ -1,14 +1,8 @@
-let nodesToMakeEditable = [];
 
 function initViewer() {
   window.viewer = WALK.getViewer();
 
-  if (nodesToMakeEditable.length > 0) {
-    console.log("Applying editable nodes early:", nodesToMakeEditable);
-    nodesToMakeEditable.forEach(node => {
-      window.viewer.setNodeTypeEditable(node);
-    });
-  }
+  window.parent.postMessage({ type: 'READY_FOR_EDITABLE' }, '*');
 
   const anchorIdToAnchor = new Map();
 
@@ -182,7 +176,6 @@ function initViewer() {
         },
       ];
       anchors.forEach(anchorConfig => {
-        // viewer.addAnchor(anchorConfig, anchorClicked);
         const anchorObject = viewer.addAnchor(anchorConfig, anchorClicked);
         anchorIdToAnchor.set(anchorObject, anchorConfig);
       });
@@ -202,12 +195,10 @@ window.addEventListener("message", function (e) {
       window.viewer.setMaterialEditable(materialName);
     });
   }else if(e.data && 'B3331D7E-5FEA-4763-959F-BB468F7A2252' === e.data.type){
-    // console.log("NODES_EDITABLE", e.data)
-    // e.data.nodes.forEach(node => {
-    //   window.viewer.setNodeTypeEditable(node);
-    // });
-    console.log("NODES_EDITABLE (queued)", e.data);
-    nodesToMakeEditable = e.data.nodes;  
+    console.log("NODES_EDITABLE", e.data)
+    e.data.nodes.forEach(node => {
+      window.viewer.setNodeTypeEditable(node);
+    });
   } else if(e.data && '0047F251-C4C9-4163-BD66-E78E2096AB0B' === e.data.type){
     this.window.viewer.switchToView(e.data.view);
   }else if(e.data && '980A9415-2888-4596-BDB0-37DE9CA99702' === e.data.type){
