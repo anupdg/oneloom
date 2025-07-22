@@ -67,6 +67,30 @@ function initViewer() {
           tabType: "Material"
         },
         {
+          name: "DINING_FLOOR",
+          position: [
+                    -2.9217184117301214,
+                    1.2104482636169263,
+                    0.11
+                ],
+          type: 'sphere',
+          icon: 'info',  
+          radius: 0.15,
+          tabType: "Material"
+        },
+        {
+          name: "BEDROOM_FLOOR",
+          position: [
+                    -6.090789058661746,
+                    -4.05315297660159,
+                    0.09
+                ],
+          type: 'sphere',
+          icon: 'info',  
+          radius: 0.15,
+          tabType: "Material"
+        },
+        {
           name: "DINING_CARPET",
           position: [
                     -3.877094249470993,
