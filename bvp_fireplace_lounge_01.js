@@ -222,6 +222,7 @@ window.addEventListener("message", function (e) {
       window.viewer.setMaterialEditable(materialName);
     });
   }else if(e.data && 'B615910B-0253-4334-B7FD-B9CFCFD3E155' === e.data.type){
+    console.log('Received anchors message', e.data);
     anchorsFromMenu = e.data.anchors;
   }else if(e.data && 'B3331D7E-5FEA-4763-959F-BB468F7A2252' === e.data.type){
     console.log("NODES_EDITABLE", e.data)
