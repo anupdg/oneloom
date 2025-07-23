@@ -201,7 +201,7 @@ function initViewer() {
       //   },
       // ];
       
-      
+      const anchors = anchorsFromMenu.length > 0 ? anchorsFromMenu : [];
       anchors.forEach(anchorConfig => {
         const anchorObject = viewer.addAnchor(anchorConfig, anchorClicked);
         anchorIdToAnchor.set(anchorObject, anchorConfig);
