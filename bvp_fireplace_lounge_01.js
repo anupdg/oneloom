@@ -35,11 +35,6 @@ function initViewer() {
         const anchorObject = viewer.addAnchor(anchorConfig, anchorClicked);
         anchorIdToAnchor.set(anchorObject, anchorConfig);
       });
-
-      window.parent.postMessage(
-        { type: '56C8AB6F-5F86-441A-9E7B-84CF4A81CDC9', payload: {} },
-      "*"
-    );
   }
   viewer.onSceneReadyToDisplay(sceneReadyToDisplay);
 }
@@ -51,7 +46,6 @@ window.addEventListener("message", function (e) {
       window.viewer.setMaterialEditable(materialName);
     });
   }else if(e.data && 'B615910B-0253-4334-B7FD-B9CFCFD3E155' === e.data.type){
-    console.log('Received anchors message', e.data);
     anchorsFromMenu = e.data.anchors;
   }else if(e.data && 'B3331D7E-5FEA-4763-959F-BB468F7A2252' === e.data.type){
     console.log("NODES_EDITABLE", e.data)
@@ -73,9 +67,7 @@ window.addEventListener("message", function (e) {
   }else if(e.data && '22D78DEB-39B2-4DB4-A560-5B0C143B02F8' === e.data.type){
     const material = window.viewer.findMaterial(e.data.material);
     for (const node of window.viewer.findNodesOfType(e.data.node)) {
-      console.log('BEFORE:', node.mesh.material.name);
       window.viewer.setMaterialForMesh(material, node.mesh);
-      console.log('AFTER:', node.mesh.material.name);
     }
     window.viewer.requestFrame();
   }
