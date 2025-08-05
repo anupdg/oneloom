@@ -12,7 +12,7 @@ function applyCustomSofaTexture(imageUrl, node) {
     const material = window.viewer.findMaterial(sofaMaterialName);
     if (material) {
       material.baseColorTexture = texture;
-      const nodes = window.viewer.findNodesOfType(nodeName);
+      const nodes = window.viewer.findNodesOfType(node);
       nodes.forEach(node => {
         window.viewer.setMaterialForMesh(material, node.mesh);
       });
