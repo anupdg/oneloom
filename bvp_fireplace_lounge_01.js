@@ -1,32 +1,49 @@
 let anchorsFromMenu = [];
 
-function applyCustomSofaTexture(imageUrl, node) {
-  const sofaMaterialName = "FAB_1";
-  window.viewer.setMaterialEditable(sofaMaterialName);
+function applyCustomSofaTexture(imageUrl, nodeName) {
+  const baseMaterialName = "FAB_1";
+  const newMaterialName = "FAB_1_CUSTOM"; // Choose a unique name for the new material
+
+  window.viewer.setMaterialEditable(baseMaterialName);
 
   const img = new window.Image();
-  img.crossOrigin = "anonymous"; // REQUIRED if the image is loaded from another domain for WebGL
+  img.crossOrigin = "anonymous";
 
   img.onload = function () {
+    // Create WebGL texture
     const texture = window.viewer.createTextureFromHtmlImage(img);
-    const material = window.viewer.findMaterial(sofaMaterialName);
-    if (material) {
-      material.baseColorTexture = texture;
-      const nodes = window.viewer.findNodesOfType(node);
-      nodes.forEach(node => {
-        window.viewer.setMaterialForMesh(material, node.mesh);
-      });
-      window.viewer.requestFrame(); // Force a re-render
-    } else {
-      console.error("Sofa material not found:", sofaMaterialName);
+
+    // Find the base material
+    const baseMaterial = window.viewer.findMaterial(baseMaterialName);
+    if (!baseMaterial) {
+      console.error("Base material not found:", baseMaterialName);
+      return;
     }
+
+    // Create a shallow clone of the base material
+    const newMaterial = Object.assign({}, baseMaterial);
+    newMaterial.name = newMaterialName;
+    newMaterial.baseColorTexture = texture;
+
+    // Add new material to the viewer's materials array
+    window.viewer.materials.push(newMaterial);
+
+    // Assign the new material to the meshes of the target node only
+    const nodes = window.viewer.findNodesOfType(nodeName);
+    nodes.forEach(node => {
+      window.viewer.setMaterialForMesh(newMaterial, node.mesh);
+    });
+
+    window.viewer.requestFrame();
   };
+
   img.onerror = function() {
     console.error("Failed to load image:", imageUrl);
   };
 
   img.src = imageUrl;
 }
+
 
 function initViewer() {
   window.viewer = WALK.getViewer();
