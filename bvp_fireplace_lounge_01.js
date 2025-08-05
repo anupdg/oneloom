@@ -12,10 +12,6 @@ function applyCustomSofaTexture(imageUrl, node) {
     const material = window.viewer.findMaterial(sofaMaterialName);
     if (material) {
       material.baseColorTexture = texture;
-      const nodes = window.viewer.findNodesOfType(node);
-      nodes.forEach(node => {
-        window.viewer.setMaterialForMesh(material, node.mesh);
-      });
       window.viewer.requestFrame(); // Force a re-render
     } else {
       console.error("Sofa material not found:", sofaMaterialName);
