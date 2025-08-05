@@ -1,24 +1,21 @@
 let anchorsFromMenu = [];
 
-function applyCustomSofaTexture(imageUrl) {
-  // Name of the material assigned to your sofa object:
-  // If unknown, check in Shapespark editor or via viewer.materials for actual name.
-  const sofaMaterialName = "FAB_1"; // update if your sofa uses a different material
-
-  // 1. Make the sofa material editable (required for the API to allow overriding textures!)
+function applyCustomSofaTexture(imageUrl, node) {
+  const sofaMaterialName = "FAB_1";
   window.viewer.setMaterialEditable(sofaMaterialName);
 
-  // 2. Create the image element in JS only
   const img = new window.Image();
   img.crossOrigin = "anonymous"; // REQUIRED if the image is loaded from another domain for WebGL
 
   img.onload = function () {
-    // 3. Create a WebGL texture from image
     const texture = window.viewer.createTextureFromHtmlImage(img);
-    // 4. Find the editable material
     const material = window.viewer.findMaterial(sofaMaterialName);
     if (material) {
       material.baseColorTexture = texture;
+      const nodes = window.viewer.findNodesOfType(nodeName);
+      nodes.forEach(node => {
+        window.viewer.setMaterialForMesh(material, node.mesh);
+      });
       window.viewer.requestFrame(); // Force a re-render
     } else {
       console.error("Sofa material not found:", sofaMaterialName);
@@ -73,7 +70,7 @@ function initViewer() {
 window.addEventListener("message", function (e) {
   if (e.data && "9BFBEC93-95BA-4CC4-996B-EB889F5C0E7C" === e.data.type) {
     console.log("inside custom texture postmessage");
-    console.log(e.data.url);
+    console.log(e.data.url, e.data.node);
     applyCustomSofaTexture(e.data.url);
   }
   if(e.data && 'FC9B8633-FB7E-4CDB-B9B4-9C7402805EB8' === e.data.type){
