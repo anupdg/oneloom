@@ -72,6 +72,7 @@ function initViewer() {
 
 window.addEventListener("message", function (e) {
   if (e.data && "9BFBEC93-95BA-4CC4-996B-EB889F5C0E7C" === e.data.type) {
+    console.log("inside custom texture postmessage");
     console.log(e.data.url);
     applyCustomSofaTexture(e.data.url);
   }
