@@ -71,7 +71,7 @@ function initViewer() {
 }
 
 window.addEventListener("message", function (e) {
-  if (e.data && e.data.type === "CUSTOM_SOFA_TEXTURE" && e.data.url) {
+  if (e.data && "CUSTOM_SOFA_TEXTURE" === e.data.type) {
     applyCustomSofaTexture(e.data.url);
   }
   if(e.data && 'FC9B8633-FB7E-4CDB-B9B4-9C7402805EB8' === e.data.type){
