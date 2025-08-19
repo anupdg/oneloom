@@ -70,7 +70,6 @@ function initViewer() {
       "*"
     );
     console.log("Sent message to parent to select node:", node.Type);
-  });
 
   });
 }
