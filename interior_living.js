@@ -62,12 +62,16 @@ function initViewer() {
       });
   }
   viewer.onSceneReadyToDisplay(sceneReadyToDisplay);
-    window.viewer.on("nodeClicked", function(node) {
+  window.viewer.onNodeTypeClicked(function(node) {
     console.log("Node clicked inside scene:", node);
-    window.parent.postMessage({
-      type: "NODE_CLICKED",
-      node: node
-    }, "*");
+  
+    window.parent.postMessage(
+      { type: "SELECT_FROM_SCENE_CLICK", payload: { nodeType: node.Type } },
+      "*"
+    );
+    console.log("Sent message to parent to select node:", node.Type);
+  });
+
   });
 }
 
