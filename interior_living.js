@@ -55,8 +55,6 @@ function initViewer() {
 
   function sceneReadyToDisplay() {
       window.viewer.anchorsVisible = false;
-      viewer.onNodeTypeClicked(function(node){
-      console.log("node", node);}
       const anchors = anchorsFromMenu.length > 0 ? anchorsFromMenu : [];
       anchors.forEach(anchorConfig => {
         const anchorObject = viewer.addAnchor(anchorConfig, anchorClicked);
