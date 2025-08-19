@@ -62,7 +62,6 @@ function initViewer() {
       });
   }
   viewer.onSceneReadyToDisplay(sceneReadyToDisplay);
-  });
 }
 
 window.addEventListener("message", function (e) {
