@@ -64,6 +64,13 @@ function initViewer() {
       });
   }
   viewer.onSceneReadyToDisplay(sceneReadyToDisplay);
+    window.viewer.on("nodeClicked", function(node) {
+    console.log("Node clicked inside scene:", node);
+    window.parent.postMessage({
+      type: "NODE_CLICKED",
+      node: node
+    }, "*");
+  });
 }
 
 window.addEventListener("message", function (e) {
