@@ -13,7 +13,7 @@ function applyCustomTexture(imageUrl, node, materialName) {
       material.baseColorTexture = texture;
       window.viewer.requestFrame(); // Force a re-render
     } else {
-      console.error("Sofa material not found:", materialName);
+      console.error("Material not found:", materialName);
     }
   };
   img.onerror = function() {
