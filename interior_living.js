@@ -3,6 +3,7 @@ let anchorsFromMenu = [];
 function applyCustomTexture(imageUrl, node, materialName) {
   // const sofaMaterialName = materialName;
   const nodeValue = window.viewer.findNodesOfType(node)
+  console.log(nodeValue.material)
   // console.log(nodeValue.mesh.material.name)
   window.viewer.setMaterialEditable(materialName);
 
