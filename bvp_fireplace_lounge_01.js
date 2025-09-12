@@ -102,66 +102,34 @@ window.addEventListener("message", function (e) {
     }
     window.viewer.requestFrame();
   }else if (e.data && e.data.type === "CAPTURE_SCENE") {
-    (async function() {
+    (async () => {
       try {
-        const opts = e.data.options || {};
-        // default width/height to current window dims if not provided
-        const width = opts.width || window.innerWidth;
-        const height = opts.height || window.innerHeight;
-        const toDataUrl = opts.toDataUrl !== false; // default true
+        // Capture screenshot at current camera view as a base64 JPEG string
+        const dataUrl = await window.viewer.captureImage({
+          toDataUrl: true
+        });
 
-        const captureOptions = {
-          width: width,
-          height: height,
-          toDataUrl: toDataUrl
-        };
-
-        // viewer.captureImage may return either a string or a Promise depending on runtime
-        const maybe = window.viewer.captureImage(captureOptions);
-
-        let resultStr;
-        if (maybe && typeof maybe.then === "function") {
-          // promise
-          resultStr = await maybe;
-        } else {
-          // synchronous string
-          resultStr = maybe;
-        }
-
-        // Normalize result to a data URL string:
-        // docs say it returns base64 string when toDataUrl=true — it may or may not include data: prefix.
-        let dataUrl;
-        if (typeof resultStr === "string") {
-          if (/^\s*data:/i.test(resultStr)) {
-            dataUrl = resultStr;
-          } else {
-            // assume JPEG base64 without prefix
-            dataUrl = "data:image/jpeg;base64," + resultStr;
-          }
-        } else {
-          throw new Error("Unexpected captureImage result type");
-        }
-
-        // Post result back to parent
+        // Send the base64 data URL back to the parent page
         window.parent.postMessage(
           {
             type: "CAPTURE_SCENE_RESULT",
-            image: dataUrl,
+            image: dataUrl
           },
-          "*" // consider using specific origin in production
+          "*"
         );
       } catch (err) {
-        console.error("Error capturing screenshot:", err);
+        console.error("Screenshot capture error:", err);
         window.parent.postMessage(
           {
             type: "CAPTURE_SCENE_ERROR",
-            message: err?.message || String(err),
+            message: err?.message || String(err)
           },
           "*"
         );
       }
     })();
   }
+
 
 })
 
