@@ -1,20 +1,19 @@
 let anchorsFromMenu = [];
 
-function applyCustomSofaTexture(imageUrl, node) {
-  const sofaMaterialName = "FAB_1";
-  window.viewer.setMaterialEditable(sofaMaterialName);
+function applyCustomTexture(imageUrl, node, materialName) {
+  window.viewer.setMaterialEditable(materialName);
 
   const img = new window.Image();
   img.crossOrigin = "anonymous"; // REQUIRED if the image is loaded from another domain for WebGL
 
   img.onload = function () {
     const texture = window.viewer.createTextureFromHtmlImage(img);
-    const material = window.viewer.findMaterial(sofaMaterialName);
+    const material = window.viewer.findMaterial(materialName);
     if (material) {
       material.baseColorTexture = texture;
       window.viewer.requestFrame(); // Force a re-render
     } else {
-      console.error("Sofa material not found:", sofaMaterialName);
+      console.error("Material not found:", materialName);
     }
   };
   img.onerror = function() {
@@ -55,7 +54,6 @@ function initViewer() {
 
   function sceneReadyToDisplay() {
       window.viewer.anchorsVisible = false;
-      
       const anchors = anchorsFromMenu.length > 0 ? anchorsFromMenu : [];
       anchors.forEach(anchorConfig => {
         const anchorObject = viewer.addAnchor(anchorConfig, anchorClicked);
@@ -68,8 +66,8 @@ function initViewer() {
 window.addEventListener("message", function (e) {
   if (e.data && "9BFBEC93-95BA-4CC4-996B-EB889F5C0E7C" === e.data.type) {
     console.log("inside custom texture postmessage");
-    console.log(e.data.url, e.data.node);
-    applyCustomSofaTexture(e.data.url);
+    console.log(e.data.url, e.data.node, e.data.materialName);
+    applyCustomTexture(e.data.url, e.data.node, e.data.materialName);
   }
   if(e.data && 'FC9B8633-FB7E-4CDB-B9B4-9C7402805EB8' === e.data.type){
     console.log("MATERIALS_EDITABLE", e.data)
@@ -129,8 +127,6 @@ window.addEventListener("message", function (e) {
       }
     })();
   }
-
-
 })
 
 document.addEventListener("DOMContentLoaded", function () {
