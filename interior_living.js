@@ -1,7 +1,7 @@
 let anchorsFromMenu = [];
 
 function applyCustomTexture(imageUrl, node, materialName) {
-  window.viewer.setMaterialEditable(materialName);
+  // window.viewer.setMaterialEditable(materialName);
 
   const img = new window.Image();
   img.crossOrigin = "anonymous"; // REQUIRED if the image is loaded from another domain for WebGL
