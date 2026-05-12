@@ -555,6 +555,40 @@
 
     viewer.anchorsVisible = false;
 
+    function hideDefaultShapesparkUI() {
+
+      const ids = [
+        "view-list",
+        "menu-bar-slide"
+      ];
+
+      ids.forEach(id => {
+
+        const el = document.getElementById(id);
+
+        if (!el) return;
+
+        el.style.opacity = "0";
+        el.style.pointerEvents = "none";
+        el.style.visibility = "hidden";
+
+      });
+    }
+
+    viewer.onSceneReadyToDisplay(() => {
+
+      hideDefaultShapesparkUI();
+
+      setTimeout(() => {
+        hideDefaultShapesparkUI();
+      }, 1000);
+
+      setInterval(() => {
+        hideDefaultShapesparkUI();
+      }, 100);
+
+    });
+
     createMenuUI();
 
     state.stack = [
