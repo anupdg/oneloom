@@ -32,13 +32,13 @@
   const configuratorGroups = [
     {
       key: "console",
-      label: "Switch to Console View",
+      label: "Console",
       view: "Console",
       nodes: ["panel2"]
     },
     {
       key: "sofa",
-      label: "Switch to Sofa View",
+      label: "Sofa",
       view: "Sofa",
       nodes: ["panel1", "sofa", "rug"]
     }
@@ -131,6 +131,7 @@
   };
 
   function waitForViewer() {
+
     return new Promise((resolve) => {
 
       const interval = setInterval(() => {
@@ -224,7 +225,7 @@
 
     root.style.position = "fixed";
     root.style.top = "20px";
-    root.style.left = "20px";
+    root.style.right = "20px";
     root.style.zIndex = "999999";
 
     const toggleButton = document.createElement("button");
@@ -268,6 +269,70 @@
     root.appendChild(panel);
 
     document.body.appendChild(root);
+  }
+
+  function hideDefaultShapesparkUI() {
+
+    const selectors = [
+
+      ".view-menu",
+      ".views-menu",
+      ".navigation",
+      ".navigation-ui",
+      ".viewer-ui",
+      ".viewer-controls",
+      ".walk-ui",
+      ".walk-navigation",
+      ".walk-view-menu",
+      ".configurator",
+      ".configurator-ui",
+
+      "#view-menu",
+      "#views-menu",
+      "#navigation",
+      "#navigation-ui",
+
+      "[data-role='navigation']",
+      "[data-role='view-menu']",
+      "[data-role='configurator']"
+    ];
+
+    selectors.forEach(selector => {
+
+      document.querySelectorAll(selector)
+        .forEach(el => {
+
+          el.style.display = "none";
+          el.style.visibility = "hidden";
+          el.style.pointerEvents = "none";
+          el.style.opacity = "0";
+        });
+    });
+
+    document.querySelectorAll("div").forEach(el => {
+
+      const text = el.innerText?.trim();
+
+      if (
+        text === "Views" ||
+        text === "Walk" ||
+        text === "Fly"
+      ) {
+
+        el.style.display = "none";
+      }
+    });
+  }
+
+  function continuouslyHideUI() {
+
+    hideDefaultShapesparkUI();
+
+    setInterval(() => {
+
+      hideDefaultShapesparkUI();
+
+    }, 1000);
   }
 
   function renderMenu() {
@@ -343,7 +408,7 @@
 
     if (group.key === "sofa") {
 
-      const materialBtn = createButton("Change Material");
+      const materialBtn = createButton("Material Change");
 
       materialBtn.onclick = () => {
 
@@ -354,7 +419,7 @@
 
       panel.appendChild(materialBtn);
 
-      const meshBtn = createButton("Change Mesh");
+      const meshBtn = createButton("Mesh Change");
 
       meshBtn.onclick = () => {
 
@@ -553,7 +618,12 @@
 
     window.viewer = viewer;
 
-    viewer.anchorsVisible = false;
+    continuouslyHideUI();
+
+    viewer.onSceneReadyToDisplay(() => {
+
+      viewer.anchorsVisible = false;
+    });
 
     createMenuUI();
 
