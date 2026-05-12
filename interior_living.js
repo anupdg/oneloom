@@ -224,7 +224,7 @@
 
     root.style.position = "fixed";
     root.style.top = "20px";
-    root.style.right = "20px";
+    root.style.left = "20px";
     root.style.zIndex = "999999";
 
     const toggleButton = document.createElement("button");
