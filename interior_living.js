@@ -32,13 +32,13 @@
   const configuratorGroups = [
     {
       key: "console",
-      label: "Console",
+      label: "Switch to Console View",
       view: "Console",
       nodes: ["panel2"]
     },
     {
       key: "sofa",
-      label: "Sofa",
+      label: "Switch to Sofa View",
       view: "Sofa",
       nodes: ["panel1", "sofa", "rug"]
     }
@@ -343,7 +343,7 @@
 
     if (group.key === "sofa") {
 
-      const materialBtn = createButton("Material Change");
+      const materialBtn = createButton("Change Material");
 
       materialBtn.onclick = () => {
 
@@ -354,7 +354,7 @@
 
       panel.appendChild(materialBtn);
 
-      const meshBtn = createButton("Mesh Change");
+      const meshBtn = createButton("Change Mesh");
 
       meshBtn.onclick = () => {
 
