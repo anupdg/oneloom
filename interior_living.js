@@ -32,13 +32,13 @@
   const configuratorGroups = [
     {
       key: "console",
-      label: "Console",
+      label: "Switch to Console View",
       view: "Console",
       nodes: ["panel2"]
     },
     {
       key: "sofa",
-      label: "Sofa",
+      label: "Switch to Sofa View",
       view: "Sofa",
       nodes: ["panel1", "sofa", "rug"]
     }
@@ -131,7 +131,6 @@
   };
 
   function waitForViewer() {
-
     return new Promise((resolve) => {
 
       const interval = setInterval(() => {
@@ -225,7 +224,7 @@
 
     root.style.position = "fixed";
     root.style.top = "20px";
-    root.style.right = "20px";
+    root.style.left = "20px";
     root.style.zIndex = "999999";
 
     const toggleButton = document.createElement("button");
@@ -269,70 +268,6 @@
     root.appendChild(panel);
 
     document.body.appendChild(root);
-  }
-
-  function hideDefaultShapesparkUI() {
-
-    const selectors = [
-
-      ".view-menu",
-      ".views-menu",
-      ".navigation",
-      ".navigation-ui",
-      ".viewer-ui",
-      ".viewer-controls",
-      ".walk-ui",
-      ".walk-navigation",
-      ".walk-view-menu",
-      ".configurator",
-      ".configurator-ui",
-
-      "#view-menu",
-      "#views-menu",
-      "#navigation",
-      "#navigation-ui",
-
-      "[data-role='navigation']",
-      "[data-role='view-menu']",
-      "[data-role='configurator']"
-    ];
-
-    selectors.forEach(selector => {
-
-      document.querySelectorAll(selector)
-        .forEach(el => {
-
-          el.style.display = "none";
-          el.style.visibility = "hidden";
-          el.style.pointerEvents = "none";
-          el.style.opacity = "0";
-        });
-    });
-
-    document.querySelectorAll("div").forEach(el => {
-
-      const text = el.innerText?.trim();
-
-      if (
-        text === "Views" ||
-        text === "Walk" ||
-        text === "Fly"
-      ) {
-
-        el.style.display = "none";
-      }
-    });
-  }
-
-  function continuouslyHideUI() {
-
-    hideDefaultShapesparkUI();
-
-    setInterval(() => {
-
-      hideDefaultShapesparkUI();
-
-    }, 1000);
   }
 
   function renderMenu() {
@@ -408,7 +343,7 @@
 
     if (group.key === "sofa") {
 
-      const materialBtn = createButton("Material Change");
+      const materialBtn = createButton("Change Material");
 
       materialBtn.onclick = () => {
 
@@ -419,7 +354,7 @@
 
       panel.appendChild(materialBtn);
 
-      const meshBtn = createButton("Mesh Change");
+      const meshBtn = createButton("Change Mesh");
 
       meshBtn.onclick = () => {
 
@@ -618,12 +553,7 @@
 
     window.viewer = viewer;
 
-    continuouslyHideUI();
-
-    viewer.onSceneReadyToDisplay(() => {
-
-      viewer.anchorsVisible = false;
-    });
+    viewer.anchorsVisible = false;
 
     createMenuUI();
 
