@@ -131,6 +131,7 @@
   };
 
   function waitForViewer() {
+
     return new Promise((resolve) => {
 
       const interval = setInterval(() => {
@@ -231,28 +232,49 @@
 
     toggleButton.innerHTML = "☰";
 
-    toggleButton.style.width = "56px";
-    toggleButton.style.height = "56px";
+    toggleButton.style.width = "58px";
+    toggleButton.style.height = "58px";
     toggleButton.style.borderRadius = "50%";
-    toggleButton.style.border = "none";
+    toggleButton.style.border =
+      "1px solid rgba(255,255,255,0.15)";
     toggleButton.style.cursor = "pointer";
     toggleButton.style.fontSize = "22px";
-    toggleButton.style.background = "rgba(80,80,80,0.65)";
-    toggleButton.style.backdropFilter = "blur(12px)";
+
+    toggleButton.style.background =
+      "linear-gradient(to bottom right, rgba(255,255,255,0.12), rgba(255,255,255,0.04))";
+
+    toggleButton.style.backdropFilter = "blur(18px)";
+    toggleButton.style.webkitBackdropFilter = "blur(18px)";
+
+    toggleButton.style.boxShadow =
+      "0 8px 25px rgba(0,0,0,0.25)";
+
     toggleButton.style.color = "white";
 
     const panel = document.createElement("div");
 
     panel.id = "ol-menu-panel";
 
-    panel.style.width = "320px";
-    panel.style.maxHeight = "75vh";
+    panel.style.width = "360px";
+    panel.style.maxHeight = "78vh";
     panel.style.overflowY = "auto";
-    panel.style.marginTop = "12px";
-    panel.style.padding = "18px";
-    panel.style.borderRadius = "20px";
-    panel.style.background = "rgba(50,50,50,0.72)";
-    panel.style.backdropFilter = "blur(18px)";
+    panel.style.marginTop = "14px";
+    panel.style.padding = "20px";
+
+    panel.style.borderRadius = "24px";
+
+    panel.style.background =
+      "linear-gradient(to bottom right, rgba(25,25,25,0.55), rgba(40,40,40,0.30))";
+
+    panel.style.backdropFilter = "blur(22px)";
+    panel.style.webkitBackdropFilter = "blur(22px)";
+
+    panel.style.border =
+      "1px solid rgba(255,255,255,0.10)";
+
+    panel.style.boxShadow =
+      "0 12px 40px rgba(0,0,0,0.35)";
+
     panel.style.display = "none";
 
     toggleButton.onclick = () => {
@@ -286,7 +308,12 @@
 
       const backBtn = createButton("← Back");
 
-      backBtn.style.marginBottom = "16px";
+      backBtn.style.fontWeight = "600";
+
+      backBtn.style.background =
+        "rgba(255,255,255,0.06)";
+
+      backBtn.style.marginBottom = "18px";
 
       backBtn.onclick = () => popState();
 
@@ -433,18 +460,58 @@
 
     panel.appendChild(title);
 
+    const grid = document.createElement("div");
+
+    grid.style.display = "grid";
+    grid.style.gridTemplateColumns = "1fr 1fr";
+    grid.style.gap = "14px";
+
     node.materials.forEach(materialName => {
 
       const wrapper = document.createElement("div");
 
-      wrapper.style.marginBottom = "18px";
       wrapper.style.cursor = "pointer";
+
+      wrapper.style.background =
+        "rgba(255,255,255,0.04)";
+
+      wrapper.style.padding = "8px";
+
+      wrapper.style.borderRadius = "18px";
+
+      wrapper.style.border =
+        "1px solid rgba(255,255,255,0.08)";
+
+      wrapper.style.backdropFilter = "blur(12px)";
+
+      wrapper.style.transition =
+        "all 0.25s ease";
+
+      wrapper.onmouseenter = () => {
+
+        wrapper.style.transform = "translateY(-3px)";
+
+        wrapper.style.boxShadow =
+          "0 10px 24px rgba(0,0,0,0.28)";
+      };
+
+      wrapper.onmouseleave = () => {
+
+        wrapper.style.transform = "translateY(0px)";
+
+        wrapper.style.boxShadow = "none";
+      };
 
       const image = document.createElement("img");
 
       image.src = materialImageMap[materialName];
 
       image.style.width = "100%";
+
+      image.style.aspectRatio = "1 / 1";
+
+      image.style.objectFit = "cover";
+
       image.style.borderRadius = "14px";
 
       const label = document.createElement("div");
@@ -452,8 +519,12 @@
       label.innerHTML = materialName;
 
       label.style.color = "white";
+
       label.style.marginTop = "8px";
-      label.style.fontSize = "15px";
+
+      label.style.fontSize = "13px";
+
+      label.style.textAlign = "center";
 
       wrapper.appendChild(image);
 
@@ -467,8 +538,10 @@
         );
       };
 
-      panel.appendChild(wrapper);
+      grid.appendChild(wrapper);
     });
+
+    panel.appendChild(grid);
   }
 
   function renderMeshMenu(panel, nodeKey) {
@@ -482,7 +555,9 @@
     title.innerHTML = "Choose Sofa";
 
     title.style.color = "white";
+
     title.style.fontSize = "20px";
+
     title.style.marginBottom = "18px";
 
     panel.appendChild(title);
@@ -492,13 +567,45 @@
       const wrapper = document.createElement("div");
 
       wrapper.style.marginBottom = "18px";
+
       wrapper.style.cursor = "pointer";
+
+      wrapper.style.background =
+        "rgba(255,255,255,0.04)";
+
+      wrapper.style.padding = "10px";
+
+      wrapper.style.borderRadius = "18px";
+
+      wrapper.style.border =
+        "1px solid rgba(255,255,255,0.08)";
+
+      wrapper.style.backdropFilter = "blur(12px)";
+
+      wrapper.style.transition =
+        "all 0.25s ease";
+
+      wrapper.onmouseenter = () => {
+
+        wrapper.style.transform = "translateY(-3px)";
+
+        wrapper.style.boxShadow =
+          "0 10px 24px rgba(0,0,0,0.28)";
+      };
+
+      wrapper.onmouseleave = () => {
+
+        wrapper.style.transform = "translateY(0px)";
+
+        wrapper.style.boxShadow = "none";
+      };
 
       const image = document.createElement("img");
 
       image.src = mesh.image;
 
       image.style.width = "100%";
+
       image.style.borderRadius = "14px";
 
       const label = document.createElement("div");
@@ -508,6 +615,8 @@
       label.style.color = "white";
 
       label.style.marginTop = "8px";
+
+      label.style.textAlign = "center";
 
       wrapper.appendChild(image);
 
@@ -534,15 +643,51 @@
     btn.innerHTML = text;
 
     btn.style.width = "100%";
-    btn.style.padding = "14px";
+
+    btn.style.padding = "14px 16px";
+
     btn.style.marginBottom = "12px";
-    btn.style.border = "none";
-    btn.style.borderRadius = "14px";
+
+    btn.style.border =
+      "1px solid rgba(255,255,255,0.12)";
+
+    btn.style.borderRadius = "18px";
+
     btn.style.cursor = "pointer";
-    btn.style.fontSize = "16px";
-    btn.style.background = "rgba(255,255,255,0.12)";
-    btn.style.color = "white";
-    btn.style.backdropFilter = "blur(10px)";
+
+    btn.style.fontSize = "15px";
+
+    btn.style.color =
+      "rgba(255,255,255,0.92)";
+
+    btn.style.background =
+      "linear-gradient(to bottom right, rgba(255,255,255,0.10), rgba(255,255,255,0.04))";
+
+    btn.style.backdropFilter = "blur(18px)";
+
+    btn.style.webkitBackdropFilter = "blur(18px)";
+
+    btn.style.boxShadow =
+      "0 8px 32px rgba(0,0,0,0.25)";
+
+    btn.style.transition =
+      "all 0.25s ease";
+
+    btn.onmouseenter = () => {
+
+      btn.style.background =
+        "linear-gradient(to bottom right, rgba(255,255,255,0.18), rgba(255,255,255,0.08))";
+
+      btn.style.transform = "translateY(-2px)";
+    };
+
+    btn.onmouseleave = () => {
+
+      btn.style.background =
+        "linear-gradient(to bottom right, rgba(255,255,255,0.10), rgba(255,255,255,0.04))";
+
+      btn.style.transform = "translateY(0px)";
+    };
 
     return btn;
   }
@@ -571,7 +716,7 @@
         el.style.opacity = "0";
         el.style.pointerEvents = "none";
         el.style.visibility = "hidden";
-
+        el.style.display = "none";
       });
     }
 
@@ -586,7 +731,6 @@
       setInterval(() => {
         hideDefaultShapesparkUI();
       }, 100);
-
     });
 
     createMenuUI();
