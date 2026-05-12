@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const CONFIG_URL = "interior_living_cover.json";
+  const SCENE_CONFIG_URL = "scene.json";
   const STYLESHEET_URL = "interior_living.css";
   const APP_ROOT_ID = "olc-configurator";
 
@@ -38,6 +38,63 @@
     "[data-role='view-menu']",
     "[data-role='navigation']",
     "[data-role='configurator']"
+  ];
+
+  const DEFAULT_EXTENSIONS = [
+    {
+      enabled: true,
+      name: "1",
+      nodeTypes: ["s1", "s2", "s3"],
+      trigger: {
+        position: [-1.0541866336614973, 0.7853590668944459, 0.7981119516186964],
+        type: "sphere"
+      },
+      type: "SwitchObjects"
+    },
+    {
+      enabled: true,
+      name: "panel1",
+      toPick: ["Beigewheel", "Sagecrane", "Coralmist", "Blushaviary", "Tealaviary", "Rosagrove"],
+      toReplace: "Bloom",
+      trigger: {
+        position: [-1.676257834427554, 1.6135037877067469, 2.472428998154937],
+        type: "sphere"
+      },
+      type: "MaterialPicker"
+    },
+    {
+      enabled: true,
+      name: "rug",
+      toPick: ["Arda", "Rosefern", "Seaforest", "Midnightfern", "Stonebloom", "Kayla", "Cloudpetal", "Verdanta", "Saharine"],
+      toReplace: "Lunara",
+      trigger: {
+        position: [-0.22925512455841268, -0.23305861616930437, 0.051929565732100426],
+        type: "sphere"
+      },
+      type: "MaterialPicker"
+    },
+    {
+      enabled: true,
+      name: "sofa",
+      toPick: ["Clayweave", "Sandvelour", "Skybloom", "Stonegrid", "Terrastripe"],
+      toReplace: "Ashloom",
+      trigger: {
+        position: [-1.0517995798030526, 1.5188423025327185, 0.732193496312388],
+        type: "sphere"
+      },
+      type: "MaterialPicker"
+    },
+    {
+      enabled: true,
+      name: "panel2",
+      toPick: ["Azura", "Florawood", "Teal Medallion", "Terracotta Medallione", "Featherfield", "Meadow Lace", "Oroflora", "Aqualora"],
+      toReplace: "Lilacstone",
+      trigger: {
+        position: [3.694529930824853, 1.14799819145809, 2.406918933065865],
+        type: "sphere"
+      },
+      type: "MaterialPicker"
+    }
   ];
 
   const materialImageMap = {
@@ -465,9 +522,9 @@
     }
 
     async load() {
-      const response = await fetch(CONFIG_URL, { cache: "no-store" });
+      const response = await fetch(SCENE_CONFIG_URL, { cache: "force-cache" });
       if (!response.ok) {
-        throw new Error(`Unable to load ${CONFIG_URL}: ${response.status}`);
+        throw new Error(`Unable to load ${SCENE_CONFIG_URL}: ${response.status}`);
       }
 
       const config = await response.json();
@@ -476,7 +533,9 @@
     }
 
     buildFromConfig(config) {
-      const extensions = Array.isArray(config.extensions) ? config.extensions : [];
+      const extensions = Array.isArray(config.extensions) && config.extensions.length
+        ? config.extensions
+        : DEFAULT_EXTENSIONS;
       this.anchors = extensions
         .filter((extension) => extension.enabled !== false && extension.trigger && extension.trigger.position)
         .map((extension) => {
@@ -541,7 +600,7 @@
         }
       });
 
-      this.views = this.buildViewList();
+      this.views = this.buildViewList(config);
     }
 
     meshesFromExtension(extension) {
@@ -577,9 +636,20 @@
       return defaultMesh ? defaultMesh.name : meshes[0]?.name || "";
     }
 
-    buildViewList() {
+    buildViewList(config) {
       const byView = new Map();
-      DEFAULT_VIEW_BUTTONS.forEach((entry) => byView.set(entry.view, entry));
+
+      if (Array.isArray(config?.views)) {
+        config.views
+          .filter((view) => view && view.name && view.hideFromMenu !== true)
+          .forEach((view) => byView.set(view.name, { label: view.name, view: view.name }));
+      }
+
+      DEFAULT_VIEW_BUTTONS.forEach((entry) => {
+        if (!byView.has(entry.view)) {
+          byView.set(entry.view, entry);
+        }
+      });
 
       Object.values(this.nodes).forEach((node) => {
         if (node.view && !byView.has(node.view)) {
